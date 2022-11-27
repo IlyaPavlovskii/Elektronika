@@ -12,6 +12,15 @@ internal object ElektronikaFactors {
         val HEIGHT_FACTOR = 0.33.rf
         val START_Y_FACTOR = 0.33.rf
     }
+    object Battery {
+        val WIDTH_FACTOR = 0.66.rf
+        val HEIGHT_FACTOR = 0.02.rf
+        val START_Y_FACTOR = 0.7.rf
+        val START_ICON_Y_FACTOR = 0.73.rf
+        val ICON_WIDTH_FACTOR = 0.07.rf
+        val BATTERY_LEVEL_ICON_WIDTH_FACTOR = 1.2.rf
+        val BATTERY_LEVEL_ICON_HEIGHT_FACTOR = 0.85.rf
+    }
     object DigitalClock {
         val START_DATE_Y_FACTOR = 0.43.rf
         val START_CLOCK_Y_FACTOR = 0.6.rf

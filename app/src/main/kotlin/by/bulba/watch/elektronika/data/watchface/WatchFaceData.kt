@@ -15,9 +15,11 @@
  */
 package by.bulba.watch.elektronika.data.watchface
 
+import androidx.annotation.IntRange
 import by.bulba.watch.elektronika.R
 import by.bulba.watch.elektronika.utils.wrapper.ColorWrapper
 import by.bulba.watch.elektronika.utils.wrapper.DimensWrapper
+import by.bulba.watch.elektronika.utils.wrapper.DrawableWrapper
 import by.bulba.watch.elektronika.utils.wrapper.TextWrapper
 import java.time.format.DateTimeFormatter
 
@@ -104,6 +106,10 @@ data class WatchFaceData(
         label = TextWrapper.Id(R.string.elektronika__bottom_label),
         labelColor = ColorWrapper.Id(R.color.elektronika__text_color),
     ),
+    val battery: Battery = Battery(
+        level = Battery.Level(0u),
+        state = Battery.State.NOT_CHARGING,
+    )
 ) {
     data class Label(
         val label: TextWrapper,
@@ -123,6 +129,85 @@ data class WatchFaceData(
         enum class TimeFormatType(val dateTimeFormatter: DateTimeFormatter) {
             HOURS_12(dateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss")),
             HOURS_24(dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")),
+        }
+    }
+
+    data class Battery(
+        val level: Level,
+        val state: State,
+        val layerColor: ColorWrapper = ColorWrapper.Id(R.color.elektronika__battery_layer_color),
+        val levelColor: ColorWrapper = ColorWrapper.Id(R.color.elektronika__battery_level_color),
+    ) {
+
+        fun getIcon(): DrawableWrapper = when(state) {
+            State.CHARGING -> DrawableWrapper.Id(R.drawable.baseline_battery_charging_full_24)
+            State.NOT_CHARGING -> {
+                val state = BatteryIconState.values().firstOrNull { batteryIconState ->
+                    level.value in batteryIconState.range
+                } ?: BatteryIconState.STATE_FULL
+                state.icon
+            }
+        }
+
+        @JvmInline
+        value class Level(
+            @IntRange(from = 0, to = 100) val value: UInt
+            ) {
+            init {
+                check(value in LEVEL_RANGE) {
+                    "Incorrect value $value. Value must be in range [0;100]"
+                }
+            }
+
+            fun getFloatValue(): Float = value.toFloat() / PERCENT_FACTOR
+
+            companion object {
+                private val LEVEL_RANGE = 0u..100u
+                private const val PERCENT_FACTOR = 100f
+            }
+        }
+
+        enum class State {
+            CHARGING,
+            NOT_CHARGING,
+        }
+
+        private enum class BatteryIconState(
+            val range: UIntRange,
+            val icon: DrawableWrapper,
+        ) {
+            STATE_0(
+                icon = DrawableWrapper.Id(R.drawable.baseline_battery_0_bar_24),
+                range = 0u..14u
+            ),
+            STATE_1(
+                icon = DrawableWrapper.Id(R.drawable.baseline_battery_1_bar_24),
+                range = 14u..28u
+            ),
+            STATE_2(
+                icon = DrawableWrapper.Id(R.drawable.baseline_battery_2_bar_24),
+                range = 28u..42u
+            ),
+            STATE_3(
+                icon = DrawableWrapper.Id(R.drawable.baseline_battery_3_bar_24),
+                range = 42u..56u
+            ),
+            STATE_4(
+                icon = DrawableWrapper.Id(R.drawable.baseline_battery_4_bar_24),
+                range = 56u..70u
+            ),
+            STATE_5(
+                icon = DrawableWrapper.Id(R.drawable.baseline_battery_5_bar_24),
+                range = 70u..84u
+            ),
+            STATE_6(
+                icon = DrawableWrapper.Id(R.drawable.baseline_battery_6_bar_24),
+                range = 84u..95u
+            ),
+            STATE_FULL(
+                icon = DrawableWrapper.Id(R.drawable.baseline_battery_full_24),
+                range = 95u..100u
+            ),
         }
     }
 }

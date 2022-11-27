@@ -15,6 +15,12 @@
  */
 package by.bulba.watch.elektronika
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
+import android.util.Log
 import android.view.SurfaceHolder
 import androidx.wear.watchface.CanvasType
 import androidx.wear.watchface.ComplicationSlotsManager
@@ -28,7 +34,12 @@ import by.bulba.watch.elektronika.complication.DefaultComplicationSlotsManagerFa
 import by.bulba.watch.elektronika.complication.impl.DefaultCanvasComplicationFactory
 import by.bulba.watch.elektronika.complication.impl.LeftComplicationSlotFactory
 import by.bulba.watch.elektronika.complication.impl.RightComplicationSlotFactory
+import by.bulba.watch.elektronika.factory.DefaultWatchFaceDataFactory
+import by.bulba.watch.elektronika.receiver.BatteryBroadcastReceiver
+import by.bulba.watch.elektronika.repository.DefaultWatchFaceDataRepository
+import by.bulba.watch.elektronika.repository.WatchFaceDataRepository
 import by.bulba.watch.elektronika.utils.createUserStyleSchema
+
 
 /**
  * Handles much of the boilerplate needed to implement a watch face (minus rendering code; see
@@ -37,12 +48,25 @@ import by.bulba.watch.elektronika.utils.createUserStyleSchema
  */
 internal class ElektronikaWatchFaceService : WatchFaceService() {
 
+    private val repository: WatchFaceDataRepository = DefaultWatchFaceDataRepository(
+        factory = DefaultWatchFaceDataFactory()
+    )
+    private val batteryReceiver: BroadcastReceiver = BatteryBroadcastReceiver(repository)
+
+    override fun onCreate() {
+        super.onCreate()
+        registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(batteryReceiver)
+        super.onDestroy()
+    }
+
     // Used by Watch Face APIs to construct user setting options and repository.
     override fun createUserStyleSchema(): UserStyleSchema =
         createUserStyleSchema(context = applicationContext)
 
-    // Creates all complication user settings and adds them to the existing user settings
-    // repository.
     override fun createComplicationSlotsManager(
         currentUserStyleRepository: CurrentUserStyleRepository
     ): ComplicationSlotsManager {
@@ -72,6 +96,7 @@ internal class ElektronikaWatchFaceService : WatchFaceService() {
             complicationSlotsManager = complicationSlotsManager,
             currentUserStyleRepository = currentUserStyleRepository,
             canvasType = CanvasType.HARDWARE,
+            dataRepository = repository,
         )
 
         // Creates the watch face.

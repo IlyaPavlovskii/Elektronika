@@ -100,5 +100,7 @@
     <color name="elektronika__clock_text_color">#000</color>
     <color name="elektronika__center_rect_fill_color">#D2ECE9</color>
     <color name="elektronika__center_rect_stroke_color">#fff</color>
+    <color name="elektronika__battery_layer_color">#3D4C65</color>
+    <color name="elektronika__battery_level_color">#fff</color>
 </resources>
 

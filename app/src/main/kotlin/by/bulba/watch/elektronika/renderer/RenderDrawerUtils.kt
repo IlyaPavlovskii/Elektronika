@@ -16,9 +16,19 @@ fun Context.createTextPaint(
     textFactor: RelativeFactor,
     textColor: ColorWrapper,
     block: (Paint) -> Paint = { it },
+): Paint = createTextPaint(
+    textColor = textColor,
+    textSize = bounds.calcFactorByHeight(textFactor),
+    block = block,
+)
+
+fun Context.createTextPaint(
+    textColor: ColorWrapper,
+    textSize: Float,
+    block: (Paint) -> Paint = { it },
 ): Paint = Paint().apply {
     isAntiAlias = true
     color = textColor.get(this@createTextPaint)
-    textSize = bounds.calcFactorByHeight(textFactor)
+    this.textSize = textSize
     typeface = this@createTextPaint.resources.getFont(R.font.technology_bold)
 }.let(block)

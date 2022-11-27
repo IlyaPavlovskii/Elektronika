@@ -30,6 +30,7 @@ import androidx.wear.watchface.style.CurrentUserStyleRepository
 import androidx.wear.watchface.style.UserStyle
 import androidx.wear.watchface.style.UserStyleSetting
 import by.bulba.watch.elektronika.data.watchface.ColorStyleIdAndResourceIds
+import by.bulba.watch.elektronika.data.watchface.WatchFaceColorPalette
 import by.bulba.watch.elektronika.data.watchface.WatchFaceColorPalette.Companion.convertToWatchFaceColorPalette
 import by.bulba.watch.elektronika.data.watchface.WatchFaceData
 import by.bulba.watch.elektronika.renderer.impl.BackgroundRendererDrawer
@@ -39,6 +40,8 @@ import by.bulba.watch.elektronika.renderer.impl.DigitalClockFaceRendererDrawer
 import by.bulba.watch.elektronika.renderer.impl.LabelRendererDrawer
 import by.bulba.watch.elektronika.renderer.RendererDrawer
 import by.bulba.watch.elektronika.renderer.compositeRendererDrawer
+import by.bulba.watch.elektronika.renderer.impl.BatteryRendererDrawer
+import by.bulba.watch.elektronika.repository.WatchFaceDataRepository
 import by.bulba.watch.elektronika.utils.COLOR_STYLE_SETTING
 import by.bulba.watch.elektronika.utils.DRAW_HOUR_PIPS_STYLE_SETTING
 import by.bulba.watch.elektronika.utils.WATCH_HAND_LENGTH_STYLE_SETTING
@@ -46,6 +49,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 
@@ -60,6 +65,7 @@ internal class ElektronikaWatchCanvasRenderer(
     private val complicationSlotsManager: ComplicationSlotsManager,
     currentUserStyleRepository: CurrentUserStyleRepository,
     canvasType: Int,
+    private val dataRepository: WatchFaceDataRepository,
 ) : Renderer.CanvasRenderer2<ElektronikaWatchCanvasRenderer.DigitalSharedAssets>(
     surfaceHolder,
     currentUserStyleRepository,
@@ -76,13 +82,12 @@ internal class ElektronikaWatchCanvasRenderer(
     private val scope: CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    private var watchFaceData: WatchFaceData = WatchFaceData()
-    private var watchFaceColors = convertToWatchFaceColorPalette(
+    private var watchFaceColors: WatchFaceColorPalette = convertToWatchFaceColorPalette(
         context,
-        watchFaceData.activeColorStyle,
-        watchFaceData.ambientColorStyle
+        dataRepository.state.value.activeColorStyle,
+        dataRepository.state.value.ambientColorStyle,
     )
-    private var rendererDrawer: RendererDrawer = createRendererDrawer(watchFaceData)
+    private var rendererDrawer: RendererDrawer = createRendererDrawer(dataRepository.state.value)
 
     init {
         scope.launch {
@@ -90,6 +95,26 @@ internal class ElektronikaWatchCanvasRenderer(
                 updateWatchFaceData(userStyle)
             }
         }
+        dataRepository.state
+            .onEach { watchFaceData ->
+                rendererDrawer = createRendererDrawer(watchFaceData)
+                watchFaceColors = convertToWatchFaceColorPalette(
+                    context,
+                    watchFaceData.activeColorStyle,
+                    watchFaceData.ambientColorStyle,
+                )
+                // Applies the user chosen complication color scheme changes. ComplicationDrawables for
+                // each of the styles are defined in XML so we need to replace the complication's
+                // drawables.
+                for ((_, complication) in complicationSlotsManager.complicationSlots) {
+                    ComplicationDrawable.getDrawable(
+                        context,
+                        watchFaceColors.complicationStyleDrawableId
+                    )?.let {
+                        (complication.renderer as CanvasComplicationDrawable).drawable = it
+                    }
+                }
+            }.launchIn(scope)
     }
 
     override suspend fun createSharedAssets(): DigitalSharedAssets {
@@ -103,7 +128,7 @@ internal class ElektronikaWatchCanvasRenderer(
     private fun updateWatchFaceData(userStyle: UserStyle) {
         Log.d(TAG, "updateWatchFace(): $userStyle")
 
-        var newWatchFaceData: WatchFaceData = watchFaceData
+        var newWatchFaceData: WatchFaceData = dataRepository.state.value
 
         // Loops through user style and applies new values to watchFaceData.
         for (options in userStyle) {
@@ -143,28 +168,8 @@ internal class ElektronikaWatchCanvasRenderer(
         }
 
         // Only updates if something changed.
-        if (watchFaceData != newWatchFaceData) {
-            watchFaceData = newWatchFaceData
-            rendererDrawer = createRendererDrawer(newWatchFaceData)
-
-            // Recreates Color and ComplicationDrawable from resource ids.
-            watchFaceColors = convertToWatchFaceColorPalette(
-                context,
-                watchFaceData.activeColorStyle,
-                watchFaceData.ambientColorStyle
-            )
-
-            // Applies the user chosen complication color scheme changes. ComplicationDrawables for
-            // each of the styles are defined in XML so we need to replace the complication's
-            // drawables.
-            for ((_, complication) in complicationSlotsManager.complicationSlots) {
-                ComplicationDrawable.getDrawable(
-                    context,
-                    watchFaceColors.complicationStyleDrawableId
-                )?.let {
-                    (complication.renderer as CanvasComplicationDrawable).drawable = it
-                }
-            }
+        if (dataRepository.state.value != newWatchFaceData) {
+            dataRepository.update(newWatchFaceData)
         }
     }
 
@@ -235,7 +240,8 @@ internal class ElektronikaWatchCanvasRenderer(
             CenterRectRendererDrawer(context, watchFaceData),
             LabelRendererDrawer(context, watchFaceData),
             BottomLabelRendererDrawer(context, watchFaceData),
-            DigitalClockFaceRendererDrawer(context, watchFaceData)
+            DigitalClockFaceRendererDrawer(context, watchFaceData),
+            BatteryRendererDrawer(context, watchFaceData),
         )
 
     companion object {
