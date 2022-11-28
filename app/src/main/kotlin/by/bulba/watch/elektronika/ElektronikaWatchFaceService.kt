@@ -99,7 +99,6 @@ internal class ElektronikaWatchFaceService : WatchFaceService() {
             dataRepository = repository,
         )
 
-        // Creates the watch face.
         return WatchFace(
             watchFaceType = WatchFaceType.DIGITAL,
             renderer = renderer

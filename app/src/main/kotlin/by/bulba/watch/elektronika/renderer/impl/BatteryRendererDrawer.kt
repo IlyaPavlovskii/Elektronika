@@ -20,15 +20,19 @@ internal class BatteryRendererDrawer(
 ) : RendererDrawer {
 
     private val iconDrawable = watchFaceData.battery.getIcon().get(context)
+        .let { drawable ->
+            drawable.setTint(watchFaceData.getPalette().strokeColor.get(context))
+            drawable
+        }
     private val levelPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = watchFaceData.battery.levelColor.get(context)
+        color = watchFaceData.getPalette().strokeColor.get(context)
     }
     private val layerPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = watchFaceData.battery.layerColor.get(context)
+        color = watchFaceData.getPalette().layerColor.get(context)
     }
     private var levelTextPaint: Paint? = null
     private var lastKnownLayerPath: Path? = null
@@ -80,7 +84,7 @@ internal class BatteryRendererDrawer(
         canvas.translate(-dx, -dy)
 
         val percentagePaint = levelTextPaint ?: context.createTextPaint(
-            textColor = watchFaceData.battery.levelColor,
+            textColor = watchFaceData.getPalette().strokeColor,
             textSize = iconSize.toFloat(),
         ) { levelTextPaint = it;it }
         canvas.drawText(

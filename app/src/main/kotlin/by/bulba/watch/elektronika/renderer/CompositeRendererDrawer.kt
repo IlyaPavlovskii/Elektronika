@@ -21,3 +21,7 @@ internal class CompositeRendererDrawer(
 internal fun compositeRendererDrawer(
     vararg rendererDrawers: RendererDrawer
 ): RendererDrawer = CompositeRendererDrawer(*rendererDrawers)
+
+internal fun compositeRendererDrawer(
+    rendererDrawers: List<RendererDrawer>
+): RendererDrawer = CompositeRendererDrawer(*rendererDrawers.toTypedArray())

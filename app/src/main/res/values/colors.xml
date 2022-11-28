@@ -95,12 +95,19 @@
     <color name="dark_pink">#F50057</color>
     <color name="dark_blue">#1565C0</color>
 
-    <color name="elektronika__background_color">#173466</color>
-    <color name="elektronika__text_color">#fff</color>
-    <color name="elektronika__clock_text_color">#000</color>
-    <color name="elektronika__center_rect_fill_color">#D2ECE9</color>
-    <color name="elektronika__center_rect_stroke_color">#fff</color>
-    <color name="elektronika__battery_layer_color">#3D4C65</color>
-    <color name="elektronika__battery_level_color">#fff</color>
+    <color name="elektronika__ambient__background_color">#000</color>
+    <color name="elektronika__ambient__secondary_background_color">#B8B8B8</color>
+    <color name="elektronika__ambient__label_text_color">#5A5A5A</color>
+    <color name="elektronika__ambient__clock_text_color">#5A5A5A</color>
+    <color name="elektronika__ambient__stroke_color">#fff</color>
+    <color name="elektronika__ambient__layer_color">#5A5A5A</color>
+
+    <color name="elektronika__primary__background_color">#173466</color>
+    <color name="elektronika__primary__secondary_background_color">#D2ECE9</color>
+    <color name="elektronika__primary__label_text_color">#fff</color>
+    <color name="elektronika__primary__clock_text_color">#000</color>
+    <color name="elektronika__primary__stroke_color">#fff</color>
+    <color name="elektronika__primary__layer_color">#3D4C65</color>
+
 </resources>
 

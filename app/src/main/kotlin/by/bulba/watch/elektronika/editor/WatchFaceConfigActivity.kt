@@ -20,13 +20,8 @@ import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
-import by.bulba.watch.elektronika.data.watchface.ColorStyleIdAndResourceIds
+import by.bulba.watch.elektronika.data.watchface.PaletteStyle
 import by.bulba.watch.elektronika.databinding.ActivityWatchFaceConfigBinding
-import by.bulba.watch.elektronika.editor.WatchFaceConfigStateHolder.Companion.MINUTE_HAND_LENGTH_DEFAULT_FOR_SLIDER
-import by.bulba.watch.elektronika.editor.WatchFaceConfigStateHolder.Companion.MINUTE_HAND_LENGTH_MAXIMUM_FOR_SLIDER
-import by.bulba.watch.elektronika.editor.WatchFaceConfigStateHolder.Companion.MINUTE_HAND_LENGTH_MINIMUM_FOR_SLIDER
-import by.bulba.watch.elektronika.utils.LEFT_COMPLICATION_ID
-import by.bulba.watch.elektronika.utils.RIGHT_COMPLICATION_ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -54,17 +49,13 @@ class WatchFaceConfigActivity : ComponentActivity() {
 
         // Disable widgets until data loads and values are set.
         binding.colorStylePickerButton.isEnabled = false
-        binding.ticksEnabledSwitch.isEnabled = false
-        binding.minuteHandLengthSlider.isEnabled = false
-
-        // Set max and min.
-        binding.minuteHandLengthSlider.valueTo = MINUTE_HAND_LENGTH_MAXIMUM_FOR_SLIDER
-        binding.minuteHandLengthSlider.valueFrom = MINUTE_HAND_LENGTH_MINIMUM_FOR_SLIDER
-        binding.minuteHandLengthSlider.value = MINUTE_HAND_LENGTH_DEFAULT_FOR_SLIDER
-
-        binding.minuteHandLengthSlider.addOnChangeListener { slider, value, fromUser ->
-            Log.d(TAG, "addOnChangeListener(): $slider, $value, $fromUser")
-            stateHolder.setMinuteHandArmLength(value)
+        binding.preview.leftComplication.setOnClickListener {
+            Log.d(TAG, "onClickLeftComplicationButton()")
+            stateHolder.setComplication(100)
+        }
+        binding.preview.rightComplication.setOnClickListener {
+            Log.d(TAG, "onClickRightComplicationButton()")
+            stateHolder.setComplication(101)
         }
 
         lifecycleScope.launch(Dispatchers.Main.immediate) {
@@ -72,14 +63,11 @@ class WatchFaceConfigActivity : ComponentActivity() {
                 .collect { uiState: WatchFaceConfigStateHolder.EditWatchFaceUiState ->
                     when (uiState) {
                         is WatchFaceConfigStateHolder.EditWatchFaceUiState.Loading -> {
-                            Log.d(TAG, "StateFlow Loading: ${uiState.message}")
+                            Log.d(TAG, "StateFlow Loading")
                         }
                         is WatchFaceConfigStateHolder.EditWatchFaceUiState.Success -> {
                             Log.d(TAG, "StateFlow Success.")
                             updateWatchFacePreview(uiState.userStylesAndPreview)
-                        }
-                        is WatchFaceConfigStateHolder.EditWatchFaceUiState.Error -> {
-                            Log.e(TAG, "Flow error: ${uiState.exception}")
                         }
                     }
                 }
@@ -94,8 +82,6 @@ class WatchFaceConfigActivity : ComponentActivity() {
         val colorStyleId: String = userStylesAndPreview.colorStyleId
         Log.d(TAG, "\tselected color style: $colorStyleId")
 
-        binding.ticksEnabledSwitch.isChecked = userStylesAndPreview.ticksEnabled
-        binding.minuteHandLengthSlider.value = userStylesAndPreview.minuteHandLength
         binding.preview.watchFaceBackground.setImageBitmap(userStylesAndPreview.previewImage)
 
         enabledWidgets()
@@ -103,34 +89,15 @@ class WatchFaceConfigActivity : ComponentActivity() {
 
     private fun enabledWidgets() {
         binding.colorStylePickerButton.isEnabled = true
-        binding.ticksEnabledSwitch.isEnabled = true
-        binding.minuteHandLengthSlider.isEnabled = true
     }
 
     fun onClickColorStylePickerButton(view: View) {
         Log.d(TAG, "onClickColorStylePickerButton() $view")
 
-        // TODO (codingjeremy): Replace with a RecyclerView to choose color style (next CL)
-        // Selects a random color style from list.
-        val colorStyleIdAndResourceIdsList = enumValues<ColorStyleIdAndResourceIds>()
-        val newColorStyle: ColorStyleIdAndResourceIds = colorStyleIdAndResourceIdsList.random()
+        val paletteStyleList = enumValues<PaletteStyle>()
+        val newColorStyle: PaletteStyle = paletteStyleList.random()
 
         stateHolder.setColorStyle(newColorStyle.id)
-    }
-
-    fun onClickLeftComplicationButton(view: View) {
-        Log.d(TAG, "onClickLeftComplicationButton() $view")
-        stateHolder.setComplication(LEFT_COMPLICATION_ID)
-    }
-
-    fun onClickRightComplicationButton(view: View) {
-        Log.d(TAG, "onClickRightComplicationButton() $view")
-        stateHolder.setComplication(RIGHT_COMPLICATION_ID)
-    }
-
-    fun onClickTicksEnabledSwitch(view: View) {
-        Log.d(TAG, "onClickTicksEnabledSwitch() $view")
-        stateHolder.setDrawPips(binding.ticksEnabledSwitch.isChecked)
     }
 
     companion object {

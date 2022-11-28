@@ -21,7 +21,7 @@ internal class LabelRendererDrawer(
     override fun draw(canvas: Canvas, bounds: Rect, zonedDateTime: ZonedDateTime) {
         val textPaint: Paint = paint ?: context.createTextPaint(
             bounds = bounds,
-            textColor = watchFaceData.label.labelColor,
+            textColor = watchFaceData.getPalette().labelTextColor,
             textFactor = ElektronikaFactors.Label.TEXT_SIZE_FACTOR,
         ) { paint = it; it }
         val text = watchFaceData.label.label.get(context).toString()

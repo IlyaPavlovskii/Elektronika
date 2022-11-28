@@ -80,60 +80,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/more_options_image_view" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/ticks_enabled_switch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/watch_ticks"
-            android:drawablePadding="@dimen/activity_config_ticks_enabled_switch_icon_padding"
-            android:gravity="start|center_vertical"
-            android:onClick="onClickTicksEnabledSwitch"
-            android:text="@string/activity_config_ticks_enabled_label"
-            android:textColor="@color/white"
-            android:textAppearance="?attr/textAppearanceButton"
-            android:contentDescription="@string/activity_config_ticks_enabled_switch_content_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/color_style_picker_button" />
-
-        <Space
-            android:id="@+id/pre_slider_spacer"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/activity_config_spacer_height_pre_slider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ticks_enabled_switch" />
-
-        <TextView
-            android:id="@+id/slider_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/activity_config_slider_text_label"
-            android:textColor="@color/white"
-            android:textAppearance="?attr/textAppearanceButton"
-            android:contentDescription="@string/activity_config_minute_hand_slider_text_label_content_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pre_slider_spacer" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/minute_hand_length_slider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:labelBehavior="gone"
-            android:contentDescription="@string/activity_config_minute_hand_length_slider_content_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/slider_label" />
-
-        <Space
-            android:id="@+id/post_content_spacer"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/activity_config_spacer_height_post_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/minute_hand_length_slider" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 

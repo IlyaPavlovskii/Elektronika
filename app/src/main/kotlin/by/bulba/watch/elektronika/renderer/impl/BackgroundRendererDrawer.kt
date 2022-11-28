@@ -12,7 +12,7 @@ internal class BackgroundRendererDrawer(
     watchFaceData: WatchFaceData,
 ) : RendererDrawer {
 
-    private val backgroundColor = watchFaceData.backgroundColor.get(context)
+    private val backgroundColor = watchFaceData.getPalette().backgroundColor.get(context)
 
     override fun draw(canvas: Canvas, bounds: Rect, zonedDateTime: ZonedDateTime) {
         canvas.drawColor(backgroundColor)

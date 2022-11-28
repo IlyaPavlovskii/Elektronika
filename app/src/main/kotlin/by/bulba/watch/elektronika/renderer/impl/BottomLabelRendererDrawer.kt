@@ -20,7 +20,7 @@ internal class BottomLabelRendererDrawer(
     override fun draw(canvas: Canvas, bounds: Rect, zonedDateTime: ZonedDateTime) {
         val textPaint: Paint = paint ?: context.createTextPaint(
             bounds = bounds,
-            textColor = watchFaceData.bottomLabel.labelColor,
+            textColor = watchFaceData.getPalette().labelTextColor,
             textFactor = ElektronikaFactors.BottomLabel.TEXT_SIZE_FACTOR,
         ) { paint = it; it }
         val text = watchFaceData.bottomLabel.label.get(context).toString()
