@@ -8,7 +8,7 @@ import androidx.wear.watchface.complications.rendering.CanvasComplicationDrawabl
 import androidx.wear.watchface.complications.rendering.ComplicationDrawable
 import by.bulba.watch.elektronika.R
 
-private const val DEFAULT_COMPLICATION_STYLE_DRAWABLE_ID = R.drawable.complication_red_style
+private const val DEFAULT_COMPLICATION_STYLE_DRAWABLE_ID = R.drawable.complication_primary_style
 
 internal class DefaultCanvasComplicationFactory(
     private val context: Context,

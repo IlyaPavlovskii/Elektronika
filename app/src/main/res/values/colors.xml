@@ -109,5 +109,12 @@
     <color name="elektronika__primary__stroke_color">#fff</color>
     <color name="elektronika__primary__layer_color">#3D4C65</color>
 
+    <color name="elektronika__secondary__background_color">#ffff00</color>
+    <color name="elektronika__secondary__secondary_background_color">#ff0000</color>
+    <color name="elektronika__secondary__label_text_color">#fff</color>
+    <color name="elektronika__secondary__clock_text_color">#000</color>
+    <color name="elektronika__secondary__stroke_color">#fff</color>
+    <color name="elektronika__secondary__layer_color">#3D4C65</color>
+
 </resources>
 

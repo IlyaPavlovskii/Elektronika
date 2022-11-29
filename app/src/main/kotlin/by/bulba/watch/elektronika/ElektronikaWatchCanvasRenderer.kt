@@ -46,11 +46,11 @@ internal class ElektronikaWatchCanvasRenderer(
     canvasType: Int,
     private val dataRepository: WatchFaceDataRepository,
 ) : Renderer.CanvasRenderer2<ElektronikaWatchCanvasRenderer.DigitalSharedAssets>(
-    surfaceHolder,
-    currentUserStyleRepository,
-    watchState,
-    canvasType,
-    FRAME_PERIOD.inWholeMilliseconds,
+    surfaceHolder = surfaceHolder,
+    currentUserStyleRepository = currentUserStyleRepository,
+    watchState = watchState,
+    canvasType = canvasType,
+    interactiveDrawModeUpdateDelayMillis = FRAME_PERIOD.inWholeMilliseconds,
     clearWithBackgroundTintBeforeRenderingHighlightLayer = false
 ) {
     class DigitalSharedAssets : SharedAssets {
@@ -93,7 +93,7 @@ internal class ElektronikaWatchCanvasRenderer(
 
                     newWatchFaceData = newWatchFaceData.copy(
                         activePalette = PaletteStyle.getColorStyleConfig(
-                            listOption.id.toString()
+                            PaletteStyle.Identifier(listOption.id.toString())
                         ).toWatchFaceColorPalette()
                     )
                 }

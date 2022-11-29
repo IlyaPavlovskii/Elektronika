@@ -1,18 +1,3 @@
-/*
- * Copyright 2021 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package by.bulba.watch.elektronika.editor
 
 import android.graphics.Bitmap
@@ -27,60 +12,74 @@ import androidx.wear.watchface.style.UserStyle
 import androidx.wear.watchface.style.UserStyleSchema
 import androidx.wear.watchface.style.UserStyleSetting
 import androidx.wear.watchface.style.WatchFaceLayer
+import by.bulba.watch.elektronika.data.watchface.PaletteStyle
 import by.bulba.watch.elektronika.utils.COLOR_STYLE_SETTING
+import by.bulba.watch.elektronika.utils.makeCircle
+import by.bulba.watch.elektronika.utils.makeRoundedAngles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
 
-/**
- * Maintains the [WatchFaceConfigActivity] state, i.e., handles reads and writes to the
- * [EditorSession] which is basically the watch face data layer. This allows the user to edit their
- * watch face through [WatchFaceConfigActivity].
- *
- * Note: This doesn't use an Android ViewModel because the [EditorSession]'s constructor requires a
- * ComponentActivity and Intent (needed for the library's complication editing UI which is triggered
- * through the [EditorSession]). Generally, Activities and Views shouldn't be passed to Android
- * ViewModels, so this is named StateHolder to avoid confusion.
- *
- * Also, the scope is passed in and we recommend you use the of the lifecycleScope of the Activity.
- *
- * For the [EditorSession] itself, this class uses the keys, [UserStyleSetting], for each of our
- * user styles and sets their values [UserStyleSetting.Option]. After a new value is set, creates a
- * new image preview via screenshot class and triggers a listener (which creates new data for the
- * [StateFlow] that feeds back to the Activity).
- */
-class WatchFaceConfigStateHolder(
+internal class WatchFaceConfigStateHolder(
     private val scope: CoroutineScope,
-    private val activity: ComponentActivity
+    private val activity: ComponentActivity,
+    private val rendererPaletteStyleIds: List<PaletteStyle.Identifier> = listOf(
+        PaletteStyle.PRIMARY.id,
+        PaletteStyle.SECONDARY.id,
+    ),
 ) {
     private lateinit var editorSession: EditorSession
-
-    // Keys from Watch Face Data Structure
     private lateinit var colorStyleKey: UserStyleSetting.ListUserStyleSetting
 
     val uiState: StateFlow<EditWatchFaceUiState> = flow<EditWatchFaceUiState> {
-        editorSession = EditorSession.createOnWatchEditorSession(
-            activity = activity
-        )
-
+        editorSession = EditorSession.createOnWatchEditorSession(activity = activity)
         extractsUserStyles(editorSession.userStyleSchema)
+
+        val userStylesAndPreviewState: StateFlow<List<UserStylesAndPreview>> =
+            editorSession.complicationsPreviewData.map { complicationsPreviewData ->
+                val userStyleValue = editorSession.userStyle.value
+                val selectedPaletteStyleId = userStyleValue.getSelectedPaletteStyleIdentifier()
+                val userStylesAndPreviewList = rendererPaletteStyleIds.map { paletteStyleId ->
+                    Log.d(TAG, "\tgenerate. setColor: $paletteStyleId")
+                    setColorStyle(paletteStyleId)
+                    val bitmap = createWatchFacePreview(complicationsPreviewData)
+                    Log.d(TAG, "\tbitmap")
+                    UserStylesAndPreview(
+                        paletteStyleId = paletteStyleId,
+                        previewImage = bitmap,
+                    )
+                }
+                setColorStyle(selectedPaletteStyleId)
+                Log.d(TAG, "Complete generation. setColor: $selectedPaletteStyleId")
+                userStylesAndPreviewList
+            }.stateIn(
+                scope = scope + Dispatchers.Main.immediate,
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList(),
+            )
 
         emitAll(
             combine(
                 editorSession.userStyle,
-                editorSession.complicationsPreviewData
-            ) { userStyle, complicationsPreviewData ->
+                userStylesAndPreviewState.drop(1),
+            ) { userStyle, previews ->
                 yield()
+
+                val selectedPaletteStyleId = userStyle.getSelectedPaletteStyleIdentifier()
+                
                 EditWatchFaceUiState.Success(
-                    createWatchFacePreview(userStyle, complicationsPreviewData)
+                    selectedPaletteStyleId = selectedPaletteStyleId,
+                    previews = previews
                 )
             }
         )
@@ -91,7 +90,6 @@ class WatchFaceConfigStateHolder(
     )
 
     private fun extractsUserStyles(userStyleSchema: UserStyleSchema) {
-        // Loops through user styles and retrieves user editable styles.
         for (setting in userStyleSchema.userStyleSettings) {
             when (setting.id.toString()) {
                 COLOR_STYLE_SETTING -> {
@@ -101,91 +99,72 @@ class WatchFaceConfigStateHolder(
         }
     }
 
-    /* Creates a new bitmap render of the updated watch face and passes it along (with all the other
-     * updated values) to the Activity to render.
-     */
     private fun createWatchFacePreview(
-        userStyle: UserStyle,
         complicationsPreviewData: Map<Int, ComplicationData>
-    ): UserStylesAndPreview {
-        Log.d(TAG, "updatesWatchFacePreview()")
-
+    ): Bitmap {
         val bitmap = editorSession.renderWatchFaceToBitmap(
-            RenderParameters(
-                DrawMode.INTERACTIVE,
-                WatchFaceLayer.ALL_WATCH_FACE_LAYERS,
-                RenderParameters.HighlightLayer(
+            renderParameters = RenderParameters(
+                drawMode = DrawMode.INTERACTIVE,
+                watchFaceLayers = WatchFaceLayer.ALL_WATCH_FACE_LAYERS,
+                highlightLayer = RenderParameters.HighlightLayer(
                     RenderParameters.HighlightedElement.AllComplicationSlots,
-                    Color.RED, // Red complication highlight.
-                    Color.argb(128, 0, 0, 0) // Darken everything else.
-                )
+                    Color.RED,
+                    Color.argb(128, 0, 0, 0)
+                ),
             ),
-            editorSession.previewReferenceInstant,
-            complicationsPreviewData
-        )
+            instant = editorSession.previewReferenceInstant,
+            slotIdToComplicationData = complicationsPreviewData
+        ).let { bitmap ->
+            if (activity.resources.configuration.isScreenRound) {
+                bitmap.makeCircle()
+            } else {
+                bitmap.makeRoundedAngles()
+            }
+        }
 
-        val colorStyle =
-            userStyle[colorStyleKey] as UserStyleSetting.ListUserStyleSetting.ListOption
-
-        return UserStylesAndPreview(
-            colorStyleId = colorStyle.id.toString(),
-            previewImage = bitmap
-        )
+        return bitmap
     }
 
     fun setComplication(complicationLocation: Int) = scope.launch(Dispatchers.Main.immediate) {
         editorSession.openComplicationDataSourceChooser(complicationLocation)
     }
 
-    fun setColorStyle(newColorStyleId: String) {
+    fun setColorStyle(newColorStyleId: PaletteStyle.Identifier) {
         val userStyleSettingList = editorSession.userStyleSchema.userStyleSettings
-
-        // Loops over all UserStyleSettings (basically the keys in the map) to find the setting for
-        // the color style (which contains all the possible options for that style setting).
-        for (userStyleSetting in userStyleSettingList) {
-            if (userStyleSetting.id == UserStyleSetting.Id(COLOR_STYLE_SETTING)) {
-                val colorUserStyleSetting =
-                    userStyleSetting as UserStyleSetting.ListUserStyleSetting
-
-                // Loops over the UserStyleSetting.Option colors (all possible values for the key)
-                // to find the matching option, and if it exists, sets it as the color style.
-                for (colorOptions in colorUserStyleSetting.options) {
-                    if (colorOptions.id.toString() == newColorStyleId) {
-                        setUserStyleOption(colorStyleKey, colorOptions)
-                        return
-                    }
-                }
+        val colorUserStyleSetting = userStyleSettingList.firstOrNull { userStyleSetting ->
+            userStyleSetting.id == UserStyleSetting.Id(COLOR_STYLE_SETTING)
+        }.let { it as? UserStyleSetting.ListUserStyleSetting } ?: return
+        colorUserStyleSetting.options
+            .firstOrNull { option ->
+                option.id.toString() == newColorStyleId.value
             }
-        }
+            ?.also { option -> setUserStyleOption(colorStyleKey, option) }
     }
 
-    // Saves User Style Option change back to the back to the EditorSession.
-    // Note: The UI widgets in the Activity that can trigger this method (through the 'set' methods)
-    // will only be enabled after the EditorSession has been initialized.
     private fun setUserStyleOption(
         userStyleSetting: UserStyleSetting,
         userStyleOption: UserStyleSetting.Option
     ) {
-        Log.d(TAG, "setUserStyleOption()")
-        Log.d(TAG, "\tuserStyleSetting: $userStyleSetting")
-        Log.d(TAG, "\tuserStyleOption: $userStyleOption")
-
-        // TODO: As of watchface 1.0.0-beta01 We can't use MutableStateFlow.compareAndSet, or
-        //       anything that calls through to that (like MutableStateFlow.update) because
-        //       MutableStateFlow.compareAndSet won't properly update the user style.
         val mutableUserStyle = editorSession.userStyle.value.toMutableUserStyle()
         mutableUserStyle[userStyleSetting] = userStyleOption
         editorSession.userStyle.value = mutableUserStyle.toUserStyle()
     }
 
+    private fun UserStyle.getSelectedPaletteStyleIdentifier(): PaletteStyle.Identifier =
+        PaletteStyle.Identifier(requireNotNull(this[colorStyleKey]?.id?.toString()))
+
     sealed class EditWatchFaceUiState {
-        data class Success(val userStylesAndPreview: UserStylesAndPreview) : EditWatchFaceUiState()
+        data class Success(
+            val selectedPaletteStyleId: PaletteStyle.Identifier,
+            val previews: List<UserStylesAndPreview>,
+        ) : EditWatchFaceUiState()
+
         object Loading : EditWatchFaceUiState()
     }
 
     data class UserStylesAndPreview(
-        val colorStyleId: String,
-        val previewImage: Bitmap
+        val paletteStyleId: PaletteStyle.Identifier,
+        val previewImage: Bitmap,
     )
 
     companion object {

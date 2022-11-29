@@ -6,13 +6,14 @@ import androidx.wear.watchface.complications.ComplicationSlotBounds
 import androidx.wear.watchface.complications.DefaultComplicationDataSourcePolicy
 import androidx.wear.watchface.complications.SystemDataSources
 import androidx.wear.watchface.complications.data.ComplicationType
+import by.bulba.watch.elektronika.complication.Complication
 import by.bulba.watch.elektronika.complication.ComplicationRelativeFactor
 import by.bulba.watch.elektronika.complication.ComplicationSlotFactory
 
 internal class LeftComplicationSlotFactory(
     private val canvasComplicationFactory: CanvasComplicationFactory,
     private val complicationRelativeFactor: ComplicationRelativeFactor = ComplicationFactors.left,
-    private val id: Int = ID,
+    private val id: Int = Complication.Left.id.value,
     private val supportedTypes: List<ComplicationType> = SUPPORTED_TYPES,
 ) : ComplicationSlotFactory {
     override fun create(): ComplicationSlot =
@@ -28,7 +29,6 @@ internal class LeftComplicationSlotFactory(
         ).build()
 
     companion object {
-        private const val ID = 100
         private val SUPPORTED_TYPES = listOf(
             ComplicationType.RANGED_VALUE,
             ComplicationType.MONOCHROMATIC_IMAGE,

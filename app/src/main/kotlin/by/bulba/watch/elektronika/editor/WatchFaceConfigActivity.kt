@@ -20,9 +20,13 @@ import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.wear.widget.WearableLinearLayoutManager
+import by.bulba.watch.elektronika.complication.Complication
 import by.bulba.watch.elektronika.data.watchface.PaletteStyle
 import by.bulba.watch.elektronika.databinding.ActivityWatchFaceConfigBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 /**
@@ -30,7 +34,8 @@ import kotlinx.coroutines.launch
  * length) by using the [WatchFaceConfigStateHolder]. (All widgets are disabled until data is
  * loaded.)
  */
-class WatchFaceConfigActivity : ComponentActivity() {
+internal class WatchFaceConfigActivity : ComponentActivity() {
+
     private val stateHolder: WatchFaceConfigStateHolder by lazy {
         WatchFaceConfigStateHolder(
             lifecycleScope,
@@ -38,65 +43,57 @@ class WatchFaceConfigActivity : ComponentActivity() {
         )
     }
 
-    private lateinit var binding: ActivityWatchFaceConfigBinding
+    private val binding: ActivityWatchFaceConfigBinding by lazy(LazyThreadSafetyMode.NONE) {
+        ActivityWatchFaceConfigBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate()")
-
-        binding = ActivityWatchFaceConfigBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Disable widgets until data loads and values are set.
-        binding.colorStylePickerButton.isEnabled = false
-        binding.preview.leftComplication.setOnClickListener {
-            Log.d(TAG, "onClickLeftComplicationButton()")
-            stateHolder.setComplication(100)
-        }
-        binding.preview.rightComplication.setOnClickListener {
-            Log.d(TAG, "onClickRightComplicationButton()")
-            stateHolder.setComplication(101)
-        }
+        initView()
 
-        lifecycleScope.launch(Dispatchers.Main.immediate) {
-            stateHolder.uiState
-                .collect { uiState: WatchFaceConfigStateHolder.EditWatchFaceUiState ->
-                    when (uiState) {
-                        is WatchFaceConfigStateHolder.EditWatchFaceUiState.Loading -> {
-                            Log.d(TAG, "StateFlow Loading")
-                        }
-                        is WatchFaceConfigStateHolder.EditWatchFaceUiState.Success -> {
-                            Log.d(TAG, "StateFlow Success.")
-                            updateWatchFacePreview(uiState.userStylesAndPreview)
-                        }
+        stateHolder.uiState
+            .onEach { uiState: WatchFaceConfigStateHolder.EditWatchFaceUiState ->
+                when (uiState) {
+                    is WatchFaceConfigStateHolder.EditWatchFaceUiState.Loading -> {
+                        Log.d(TAG, "StateFlow Loading")
+                    }
+                    is WatchFaceConfigStateHolder.EditWatchFaceUiState.Success -> {
+                        binding.leftFace.setImageBitmap(uiState.previews[0].previewImage)
+                        binding.rightFace.setImageBitmap(uiState.previews[1].previewImage)
+                        updateWatchFacePreview(uiState.previews.first {preview ->
+                            preview.paletteStyleId == uiState.selectedPaletteStyleId
+                        })
                     }
                 }
+            }.launchIn(lifecycleScope)
+    }
+
+    private fun initView() {
+        with(binding) {
+            preview.leftComplication.setOnClickListener {
+                Log.d(TAG, "onClickLeftComplicationButton()")
+                stateHolder.setComplication(Complication.Left.id.value)
+                //stateHolder.setColorStyle(PaletteStyle.PRIMARY.id)
+            }
+            preview.rightComplication.setOnClickListener {
+                Log.d(TAG, "onClickRightComplicationButton()")
+                stateHolder.setComplication(Complication.Right.id.value)
+                //stateHolder.setColorStyle(PaletteStyle.SECONDARY.id)
+            }
         }
     }
 
     private fun updateWatchFacePreview(
         userStylesAndPreview: WatchFaceConfigStateHolder.UserStylesAndPreview
     ) {
-        Log.d(TAG, "updateWatchFacePreview: $userStylesAndPreview")
-
-        val colorStyleId: String = userStylesAndPreview.colorStyleId
-        Log.d(TAG, "\tselected color style: $colorStyleId")
-
         binding.preview.watchFaceBackground.setImageBitmap(userStylesAndPreview.previewImage)
-
-        enabledWidgets()
-    }
-
-    private fun enabledWidgets() {
-        binding.colorStylePickerButton.isEnabled = true
     }
 
     fun onClickColorStylePickerButton(view: View) {
-        Log.d(TAG, "onClickColorStylePickerButton() $view")
-
         val paletteStyleList = enumValues<PaletteStyle>()
         val newColorStyle: PaletteStyle = paletteStyleList.random()
-
         stateHolder.setColorStyle(newColorStyle.id)
     }
 

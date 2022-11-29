@@ -2,7 +2,6 @@ package by.bulba.watch.elektronika.data.watchface
 
 import android.content.Context
 import android.graphics.drawable.Icon
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.wear.watchface.style.UserStyleSetting
@@ -11,9 +10,8 @@ import by.bulba.watch.elektronika.R
 import by.bulba.watch.elektronika.utils.wrapper.ColorWrapper
 
 internal enum class PaletteStyle(
-    val id: String,
+    val id: Identifier,
     @StringRes val nameResourceId: Int,
-    @DrawableRes val iconResourceId: Int,
     @DrawableRes val complicationStyleDrawableId: Int,
     val labelTextColor: ColorWrapper,
     val clockTextColor: ColorWrapper,
@@ -23,10 +21,9 @@ internal enum class PaletteStyle(
     val layerColor: ColorWrapper,
 ) {
     AMBIENT(
-        id = "ambient_style_id",
+        id = Identifier("ambient_style_id"),
         nameResourceId = R.string.ambient_style_name,
-        iconResourceId = R.drawable.white_style,
-        complicationStyleDrawableId = R.drawable.complication_white_style,
+        complicationStyleDrawableId = R.drawable.complication_ambient_style,
         labelTextColor = ColorWrapper.Id(R.color.elektronika__ambient__label_text_color),
         clockTextColor = ColorWrapper.Id(R.color.elektronika__ambient__clock_text_color),
         strokeColor = ColorWrapper.Id(R.color.elektronika__ambient__stroke_color),
@@ -36,10 +33,9 @@ internal enum class PaletteStyle(
     ),
 
     PRIMARY(
-        id = "primary_style_id",
+        id = Identifier("primary_style_id"),
         nameResourceId = R.string.primary_style_name,
-        iconResourceId = R.drawable.red_style,
-        complicationStyleDrawableId = R.drawable.complication_red_style,
+        complicationStyleDrawableId = R.drawable.complication_primary_style,
         labelTextColor = ColorWrapper.Id(R.color.elektronika__primary__label_text_color),
         clockTextColor = ColorWrapper.Id(R.color.elektronika__primary__clock_text_color),
         strokeColor = ColorWrapper.Id(R.color.elektronika__primary__stroke_color),
@@ -47,13 +43,28 @@ internal enum class PaletteStyle(
         backgroundColor = ColorWrapper.Id(R.color.elektronika__primary__background_color),
         layerColor = ColorWrapper.Id(R.color.elektronika__primary__layer_color)
     ),
+
+    SECONDARY(
+        id = Identifier("secondary_style_id"),
+        nameResourceId = R.string.secondary_style_name,
+        complicationStyleDrawableId = R.drawable.complication_secondary_style,
+        labelTextColor = ColorWrapper.Id(R.color.elektronika__secondary__label_text_color),
+        clockTextColor = ColorWrapper.Id(R.color.elektronika__secondary__clock_text_color),
+        strokeColor = ColorWrapper.Id(R.color.elektronika__secondary__stroke_color),
+        secondaryBackgroundColor = ColorWrapper.Id(R.color.elektronika__secondary__secondary_background_color),
+        backgroundColor = ColorWrapper.Id(R.color.elektronika__secondary__background_color),
+        layerColor = ColorWrapper.Id(R.color.elektronika__secondary__layer_color)
+    ),
     ;
+
+    @JvmInline
+    value class Identifier(val value: String)
 
     companion object {
         /**
          * Translates the string id to the correct ColorStyleIdAndResourceIds object.
          */
-        fun getColorStyleConfig(id: String): PaletteStyle {
+        fun getColorStyleConfig(id: Identifier): PaletteStyle {
             return enumValues<PaletteStyle>().firstOrNull { paletteStyle ->
                 paletteStyle.id == id
             } ?: PRIMARY
@@ -68,16 +79,12 @@ internal enum class PaletteStyle(
             val paletteStyles = enumValues<PaletteStyle>()
             return paletteStyles.map { colorStyleIdAndResourceIds ->
                 ListUserStyleSetting.ListOption(
-                    id = UserStyleSetting.Option.Id(colorStyleIdAndResourceIds.id),
+                    id = UserStyleSetting.Option.Id(colorStyleIdAndResourceIds.id.value),
                     resources = context.resources,
                     displayNameResourceId = colorStyleIdAndResourceIds.nameResourceId,
-                    icon = Icon.createWithResource(
-                        context,
-                        colorStyleIdAndResourceIds.iconResourceId
-                    )
+                    icon = null,
                 )
             }
         }
-
     }
 }
