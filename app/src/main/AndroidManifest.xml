@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="by.bulba.watch.elektronika">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="by.bulba.watch.elektronika"
+    >
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -15,18 +17,21 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WatchFace">
+        android:theme="@style/Theme.WatchFace"
+        >
 
         <meta-data
             android:name="com.google.android.wearable.standalone"
-            android:value="true" />
+            android:value="true"
+            />
 
         <service
             android:name=".ElektronikaWatchFaceService"
             android:directBootAware="true"
             android:exported="true"
             android:label="@string/elektronika_watch_face_name"
-            android:permission="android.permission.BIND_WALLPAPER">
+            android:permission="android.permission.BIND_WALLPAPER"
+            >
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
                 <category android:name="com.google.android.wearable.watchface.category.WATCH_FACE" />
@@ -34,26 +39,32 @@
 
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview"
-                android:resource="@drawable/watch_preview" />
+                android:resource="@drawable/watch_preview"
+                />
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview_circular"
-                android:resource="@drawable/watch_preview" />
+                android:resource="@drawable/watch_preview"
+                />
             <meta-data
                 android:name="android.service.wallpaper"
-                android:resource="@xml/watch_face" />
+                android:resource="@xml/watch_face"
+                />
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
-                android:value="androidx.wear.watchface.editor.action.WATCH_FACE_EDITOR" />
+                android:value="androidx.wear.watchface.editor.action.WATCH_FACE_EDITOR"
+                />
 
             <meta-data
                 android:name="com.google.android.wearable.watchface.companionBuiltinConfigurationEnabled"
-                android:value="true" />
+                android:value="true"
+                />
         </service>
 
         <activity
-            android:name=".editor.WatchFaceConfigActivity"
+            android:name=".editor.root.WatchSettingsRootActivity"
             android:exported="true"
-            android:label="@string/title_activity_watch_face_config">
+            android:label="@string/elektronika_watch_settings_root_label"
+            >
 
             <intent-filter>
                 <action android:name="androidx.wear.watchface.editor.action.WATCH_FACE_EDITOR" />
@@ -62,5 +73,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".editor.face.WatchFaceConfigActivity"
+            android:exported="false"
+            android:label="@string/elektronika_watch_face_config_label"
+            />
+
+        <activity
+            android:name=".editor.format.WatchTimeFormatActivity"
+            android:exported="false"
+            android:label="@string/elektronika_watch_face_config_label"
+            />
+
     </application>
 </manifest>

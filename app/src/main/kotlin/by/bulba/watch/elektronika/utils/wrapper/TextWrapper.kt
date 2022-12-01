@@ -1,6 +1,7 @@
 package by.bulba.watch.elektronika.utils.wrapper
 
 import android.content.Context
+import android.widget.TextView
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 
@@ -112,3 +113,7 @@ sealed class TextWrapper {
 }
 
 fun CharSequence.toTextWrapper(): TextWrapper = TextWrapper.Raw(this)
+
+fun TextView.setText(wrapper: TextWrapper) {
+    this.text = wrapper.get(this.context)
+}

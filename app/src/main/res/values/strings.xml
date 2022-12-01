@@ -17,7 +17,9 @@
     <string name="primary_style_name">Primary Style</string>
     <string name="secondary_style_name">Secondary Style</string>
 
-    <string name="title_activity_watch_face_config">Configuration</string>
+    <string name="elektronika_watch_settings_root_label">Configuration</string>
+    <string name="elektronika_watch_face_config_label">Watch Face</string>
+    <string name="elektronika_watch_time_format">Time Format</string>
     <!-- Use of "\n" is to conserve horizontal space in config menu. -->
     <string name="activity_config_color_style_picker_label">Color\nStyle</string>
     <string name="activity_config_ticks_enabled_label">Ticks\nEnabled</string>
@@ -35,4 +37,7 @@
 
     <string name="elektronika__top_label">ELEKTRONIKA</string>
     <string name="elektronika__bottom_label">MADE BY BELARUS</string>
+    <string name="elektronika__cd_menu_item_icon">Menu item icon</string>
+    <string name="elektronika__menu_item_watch_face">Watch Face</string>
+    <string name="elektronika__menu_item_time_format">Time format</string>
 </resources>

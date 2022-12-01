@@ -1,4 +1,4 @@
-package by.bulba.watch.elektronika.editor
+package by.bulba.watch.elektronika.editor.face
 
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -76,17 +76,17 @@ internal class WatchFaceConfigStateHolder(
                 yield()
 
                 val selectedPaletteStyleId = userStyle.getSelectedPaletteStyleIdentifier()
-                
+
                 EditWatchFaceUiState.Success(
-                    selectedPaletteStyleId = selectedPaletteStyleId,
-                    previews = previews
+                        selectedPaletteStyleId = selectedPaletteStyleId,
+                        previews = previews
                 )
             }
         )
     }.stateIn(
         scope + Dispatchers.Main.immediate,
         SharingStarted.Eagerly,
-        EditWatchFaceUiState.Loading
+            EditWatchFaceUiState.Loading
     )
 
     private fun extractsUserStyles(userStyleSchema: UserStyleSchema) {
@@ -155,8 +155,8 @@ internal class WatchFaceConfigStateHolder(
 
     sealed class EditWatchFaceUiState {
         data class Success(
-            val selectedPaletteStyleId: PaletteStyle.Identifier,
-            val previews: List<UserStylesAndPreview>,
+                val selectedPaletteStyleId: PaletteStyle.Identifier,
+                val previews: List<UserStylesAndPreview>,
         ) : EditWatchFaceUiState()
 
         object Loading : EditWatchFaceUiState()

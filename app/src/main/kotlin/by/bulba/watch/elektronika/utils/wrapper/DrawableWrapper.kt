@@ -2,6 +2,7 @@ package by.bulba.watch.elektronika.utils.wrapper
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 
@@ -22,3 +23,6 @@ sealed class DrawableWrapper {
         }
     }
 }
+
+fun ImageView.setImageDrawable(wrapper: DrawableWrapper) =
+    this.setImageDrawable(wrapper.get(this.context))
