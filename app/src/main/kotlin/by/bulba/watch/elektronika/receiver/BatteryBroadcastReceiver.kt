@@ -8,10 +8,10 @@ import android.os.BatteryManager.BATTERY_STATUS_CHARGING
 import android.os.BatteryManager.BATTERY_STATUS_UNKNOWN
 import android.util.Log
 import by.bulba.watch.elektronika.data.watchface.WatchFaceData
-import by.bulba.watch.elektronika.repository.WatchFaceDataRepository
+import by.bulba.watch.elektronika.repository.WatchFaceDataStateRepository
 
 internal class BatteryBroadcastReceiver(
-    private val repository: WatchFaceDataRepository,
+    private val repository: WatchFaceDataStateRepository,
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) ?: 0

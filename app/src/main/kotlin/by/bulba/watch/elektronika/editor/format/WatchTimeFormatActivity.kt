@@ -14,5 +14,6 @@ internal class WatchTimeFormatActivity : ComponentActivity(R.layout.activity_wat
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        //ViewModelProviders.of(<THIS ARGUMENT>).get(ScoreViewModel.class);
     }
 }

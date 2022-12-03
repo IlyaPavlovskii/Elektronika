@@ -5,10 +5,11 @@
     <string name="elektronika_watch_face_name" translatable="false">Elektronika</string>
 
     <!-- Name of watchface style category for selecting the color theme [CHAR LIMIT=20] -->
-    <string name="colors_style_setting">Colors</string>
+    <string name="settings_display_name__colors_style_setting">Colors</string>
+    <string name="settings_description__colors_style_setting">Watchface colorization</string>
 
-    <!-- Subtitle for the menu option to select the watch face color theme -->
-    <string name="colors_style_setting_description">Watchface colorization</string>
+    <string name="settings_display_name__time_format_setting">Time Format</string>
+    <string name="settings_description__time_format">Watchface time format options</string>
 
     <!-- Name of watchface style [CHAR LIMIT=20] -->
     <string name="ambient_style_name">Ambient Style</string>
@@ -16,6 +17,10 @@
     <!-- Name of watchface style [CHAR LIMIT=20] -->
     <string name="primary_style_name">Primary Style</string>
     <string name="secondary_style_name">Secondary Style</string>
+
+    <!-- Name of watchface style [CHAR LIMIT=20] -->
+    <string name="time_format__hours_12">Hours 12 format</string>
+    <string name="time_format__hours_24">Hours 24 format</string>
 
     <string name="elektronika_watch_settings_root_label">Configuration</string>
     <string name="elektronika_watch_face_config_label">Watch Face</string>

@@ -35,9 +35,7 @@ internal class MainMenuAdapter(
         holder.bind(item)
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount(): Int = items.size
 
     @SuppressLint("NotifyDataSetChanged")
     fun setItems(items: List<MenuItem>) {

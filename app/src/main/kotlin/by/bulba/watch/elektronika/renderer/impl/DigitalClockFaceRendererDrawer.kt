@@ -74,10 +74,10 @@ internal class DigitalClockFaceRendererDrawer(
     private fun formatTime(zonedDateTime: ZonedDateTime): String {
         val timeFormatter = when (watchFaceData.mode) {
             WatchFaceData.Mode.AMBIENT ->
-                watchFaceData.digitalClock.timeFormatType.ambientTimeFormatter
+                watchFaceData.digitalClock.digitalClockTimeFormat.ambientTimeFormatter
 
             WatchFaceData.Mode.ACTIVE ->
-                watchFaceData.digitalClock.timeFormatType.dateTimeFormatter
+                watchFaceData.digitalClock.digitalClockTimeFormat.dateTimeFormatter
         }
         return zonedDateTime.format(timeFormatter)
     }

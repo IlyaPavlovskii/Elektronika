@@ -13,7 +13,7 @@ import androidx.wear.watchface.style.UserStyleSchema
 import androidx.wear.watchface.style.UserStyleSetting
 import androidx.wear.watchface.style.WatchFaceLayer
 import by.bulba.watch.elektronika.data.watchface.PaletteStyle
-import by.bulba.watch.elektronika.utils.COLOR_STYLE_SETTING
+import by.bulba.watch.elektronika.repository.platform.COLOR_STYLE_SETTING
 import by.bulba.watch.elektronika.utils.makeCircle
 import by.bulba.watch.elektronika.utils.makeRoundedAngles
 import kotlinx.coroutines.CoroutineScope
@@ -91,7 +91,7 @@ internal class WatchFaceConfigStateHolder(
 
     private fun extractsUserStyles(userStyleSchema: UserStyleSchema) {
         for (setting in userStyleSchema.userStyleSettings) {
-            when (setting.id.toString()) {
+            when (setting.id) {
                 COLOR_STYLE_SETTING -> {
                     colorStyleKey = setting as UserStyleSetting.ListUserStyleSetting
                 }
@@ -132,7 +132,7 @@ internal class WatchFaceConfigStateHolder(
     fun setColorStyle(newColorStyleId: PaletteStyle.Identifier) {
         val userStyleSettingList = editorSession.userStyleSchema.userStyleSettings
         val colorUserStyleSetting = userStyleSettingList.firstOrNull { userStyleSetting ->
-            userStyleSetting.id == UserStyleSetting.Id(COLOR_STYLE_SETTING)
+            userStyleSetting.id == COLOR_STYLE_SETTING
         }.let { it as? UserStyleSetting.ListUserStyleSetting } ?: return
         colorUserStyleSetting.options
             .firstOrNull { option ->

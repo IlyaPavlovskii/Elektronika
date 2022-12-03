@@ -12,11 +12,10 @@ import androidx.wear.watchface.WatchState
 import androidx.wear.watchface.complications.rendering.CanvasComplicationDrawable
 import androidx.wear.watchface.complications.rendering.ComplicationDrawable
 import androidx.wear.watchface.style.CurrentUserStyleRepository
-import androidx.wear.watchface.style.UserStyle
-import androidx.wear.watchface.style.UserStyleSetting
-import by.bulba.watch.elektronika.data.watchface.PaletteStyle
 import by.bulba.watch.elektronika.data.watchface.WatchFaceData
-import by.bulba.watch.elektronika.data.watchface.toWatchFaceColorPalette
+import by.bulba.watch.elektronika.factory.DefaultWatchFaceDataFactory
+import by.bulba.watch.elektronika.provider.DefaultPaletteStyleProvider
+import by.bulba.watch.elektronika.provider.PaletteStyleStateProviderImpl
 import by.bulba.watch.elektronika.renderer.RendererDrawer
 import by.bulba.watch.elektronika.renderer.compositeRendererDrawer
 import by.bulba.watch.elektronika.renderer.impl.BackgroundRendererDrawer
@@ -26,8 +25,10 @@ import by.bulba.watch.elektronika.renderer.impl.CenterRectRendererDrawer
 import by.bulba.watch.elektronika.renderer.impl.DigitalClockFaceRendererDrawer
 import by.bulba.watch.elektronika.renderer.impl.LabelRendererDrawer
 import by.bulba.watch.elektronika.renderer.impl.RendererDrawerType
-import by.bulba.watch.elektronika.repository.WatchFaceDataRepository
-import by.bulba.watch.elektronika.utils.COLOR_STYLE_SETTING
+import by.bulba.watch.elektronika.repository.DefaultDigitalClockTimeFormatProvider
+import by.bulba.watch.elektronika.repository.DigitalClockTimeFormatProviderImpl
+import by.bulba.watch.elektronika.repository.WatchFaceDataStateRepository
+import by.bulba.watch.elektronika.repository.WatchFaceDataStateRepositoryImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -44,7 +45,8 @@ internal class ElektronikaWatchCanvasRenderer(
     private val complicationSlotsManager: ComplicationSlotsManager,
     currentUserStyleRepository: CurrentUserStyleRepository,
     canvasType: Int,
-    private val dataRepository: WatchFaceDataRepository,
+    private val scope: CoroutineScope,
+    private val dataRepository: WatchFaceDataStateRepository,
 ) : Renderer.CanvasRenderer2<ElektronikaWatchCanvasRenderer.DigitalSharedAssets>(
     surfaceHolder = surfaceHolder,
     currentUserStyleRepository = currentUserStyleRepository,
@@ -58,15 +60,12 @@ internal class ElektronikaWatchCanvasRenderer(
         }
     }
 
-    private val scope: CoroutineScope =
-        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
     private var rendererDrawer: RendererDrawer = createRendererDrawer(dataRepository.state.value)
 
     init {
-        currentUserStyleRepository.userStyle
-            .onEach(::updateWatchFaceData)
-            .launchIn(scope)
+//        currentUserStyleRepository.userStyle
+//            .onEach(::updateWatchFaceData)
+//            .launchIn(scope)
         dataRepository.state
             .onEach { watchFaceData ->
                 rendererDrawer = createRendererDrawer(watchFaceData)
@@ -82,28 +81,6 @@ internal class ElektronikaWatchCanvasRenderer(
     }
 
     override suspend fun createSharedAssets(): DigitalSharedAssets = DigitalSharedAssets()
-
-    private fun updateWatchFaceData(userStyle: UserStyle) {
-        var newWatchFaceData: WatchFaceData = dataRepository.state.value
-        for (options in userStyle) {
-            when (options.key.id.toString()) {
-                COLOR_STYLE_SETTING -> {
-                    val listOption = options.value as
-                            UserStyleSetting.ListUserStyleSetting.ListOption
-
-                    newWatchFaceData = newWatchFaceData.copy(
-                        activePalette = PaletteStyle.getColorStyleConfig(
-                            PaletteStyle.Identifier(listOption.id.toString())
-                        ).toWatchFaceColorPalette()
-                    )
-                }
-            }
-        }
-
-        if (dataRepository.state.value != newWatchFaceData) {
-            dataRepository.update(newWatchFaceData)
-        }
-    }
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy()")

@@ -1,11 +1,7 @@
 package by.bulba.watch.elektronika.data.watchface
 
-import android.content.Context
-import android.graphics.drawable.Icon
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.wear.watchface.style.UserStyleSetting
-import androidx.wear.watchface.style.UserStyleSetting.ListUserStyleSetting
 import by.bulba.watch.elektronika.R
 import by.bulba.watch.elektronika.utils.wrapper.ColorWrapper
 
@@ -59,32 +55,4 @@ internal enum class PaletteStyle(
 
     @JvmInline
     value class Identifier(val value: String)
-
-    companion object {
-        /**
-         * Translates the string id to the correct ColorStyleIdAndResourceIds object.
-         */
-        fun getColorStyleConfig(id: Identifier): PaletteStyle {
-            return enumValues<PaletteStyle>().firstOrNull { paletteStyle ->
-                paletteStyle.id == id
-            } ?: PRIMARY
-        }
-
-        /**
-         * Returns a list of [UserStyleSetting.ListUserStyleSetting.ListOption] for all
-         * ColorStyleIdAndResourceIds enums. The watch face settings APIs use this to set up
-         * options for the user to select a style.
-         */
-        fun toOptionList(context: Context): List<ListUserStyleSetting.ListOption> {
-            val paletteStyles = enumValues<PaletteStyle>()
-            return paletteStyles.map { colorStyleIdAndResourceIds ->
-                ListUserStyleSetting.ListOption(
-                    id = UserStyleSetting.Option.Id(colorStyleIdAndResourceIds.id.value),
-                    resources = context.resources,
-                    displayNameResourceId = colorStyleIdAndResourceIds.nameResourceId,
-                    icon = null,
-                )
-            }
-        }
-    }
 }

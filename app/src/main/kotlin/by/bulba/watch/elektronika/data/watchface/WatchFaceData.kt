@@ -3,11 +3,9 @@ package by.bulba.watch.elektronika.data.watchface
 import androidx.annotation.IntRange
 import by.bulba.watch.elektronika.R
 import by.bulba.watch.elektronika.renderer.impl.RendererDrawerType
-import by.bulba.watch.elektronika.utils.wrapper.ColorWrapper
 import by.bulba.watch.elektronika.utils.wrapper.DimensWrapper
 import by.bulba.watch.elektronika.utils.wrapper.DrawableWrapper
 import by.bulba.watch.elektronika.utils.wrapper.TextWrapper
-import java.time.format.DateTimeFormatter
 
 /**
  * Represents all data needed to render an analog watch face.
@@ -22,9 +20,7 @@ internal data class WatchFaceData(
     val centerRect: CenterRect = CenterRect(
         strokeWidth = DimensWrapper.Id(R.dimen.elektronika__stroke_width)
     ),
-    val digitalClock: DigitalClock = DigitalClock(
-        timeFormatType = DigitalClock.TimeFormatType.HOURS_24,
-    ),
+    val digitalClock: DigitalClock,
     val bottomLabel: Label = Label(
         label = TextWrapper.Id(R.string.elektronika__bottom_label),
     ),
@@ -75,22 +71,8 @@ internal data class WatchFaceData(
     )
 
     data class DigitalClock(
-        val timeFormatType: TimeFormatType,
-    ) {
-        enum class TimeFormatType(
-            val dateTimeFormatter: DateTimeFormatter,
-            val ambientTimeFormatter: DateTimeFormatter,
-        ) {
-            HOURS_12(
-                dateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss"),
-                ambientTimeFormatter = DateTimeFormatter.ofPattern("hh:mm"),
-            ),
-            HOURS_24(
-                dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss"),
-                ambientTimeFormatter = DateTimeFormatter.ofPattern("HH:mm"),
-            ),
-        }
-    }
+        val digitalClockTimeFormat: DigitalClockTimeFormat,
+    )
 
     data class Battery(
         val level: Level,
