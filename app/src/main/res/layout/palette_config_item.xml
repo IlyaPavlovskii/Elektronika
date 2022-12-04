@@ -16,7 +16,6 @@
         android:contentDescription="@string/activity_config_screenshot_content_description"
         android:scaleType="centerInside"
         android:padding="16dp"
-        android:src="@drawable/watch_preview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/watch_preview"

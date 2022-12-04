@@ -3,25 +3,25 @@ package by.bulba.watch.elektronika.editor.face
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.wear.watchface.DrawMode
 import androidx.wear.watchface.RenderParameters
 import androidx.wear.watchface.complications.data.ComplicationData
-import androidx.wear.watchface.editor.EditorSession
 import androidx.wear.watchface.style.UserStyle
-import androidx.wear.watchface.style.UserStyleSchema
-import androidx.wear.watchface.style.UserStyleSetting
 import androidx.wear.watchface.style.WatchFaceLayer
 import by.bulba.watch.elektronika.data.watchface.PaletteStyle
+import by.bulba.watch.elektronika.editor.root.WatchSettingsRootHolder
+import by.bulba.watch.elektronika.provider.DefaultPaletteStyleProvider
 import by.bulba.watch.elektronika.repository.platform.COLOR_STYLE_SETTING
+import by.bulba.watch.elektronika.utils.findSelectedOption
 import by.bulba.watch.elektronika.utils.makeCircle
 import by.bulba.watch.elektronika.utils.makeRoundedAngles
+import by.bulba.watch.elektronika.utils.setNewOptionId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -29,37 +29,34 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.yield
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class WatchFaceConfigStateHolder(
     private val scope: CoroutineScope,
-    private val activity: ComponentActivity,
-    private val rendererPaletteStyleIds: List<PaletteStyle.Identifier> = listOf(
-        PaletteStyle.PRIMARY.id,
-        PaletteStyle.SECONDARY.id,
-    ),
+    private val isScreenRound: Boolean,
+    private val defaultPaletteStyleProvider: DefaultPaletteStyleProvider =
+        DefaultPaletteStyleProvider.create(),
+    private val applyPaletteStyleDelay: Duration = DEFAULT_APPLY_PALETTE_STYLE_DELAY
 ) {
-    private lateinit var editorSession: EditorSession
-    private lateinit var colorStyleKey: UserStyleSetting.ListUserStyleSetting
+    private val editorSession = WatchSettingsRootHolder.getEditorSession()
 
     val uiState: StateFlow<EditWatchFaceUiState> = flow<EditWatchFaceUiState> {
-        editorSession = EditorSession.createOnWatchEditorSession(activity = activity)
-        extractsUserStyles(editorSession.userStyleSchema)
-
         val userStylesAndPreviewState: StateFlow<List<UserStylesAndPreview>> =
             editorSession.complicationsPreviewData.map { complicationsPreviewData ->
                 val userStyleValue = editorSession.userStyle.value
                 val selectedPaletteStyleId = userStyleValue.getSelectedPaletteStyleIdentifier()
-                val userStylesAndPreviewList = rendererPaletteStyleIds.map { paletteStyleId ->
-                    Log.d(TAG, "\tgenerate. setColor: $paletteStyleId")
-                    setColorStyle(paletteStyleId)
-                    val bitmap = createWatchFacePreview(complicationsPreviewData)
-                    Log.d(TAG, "\tbitmap")
-                    UserStylesAndPreview(
-                        paletteStyleId = paletteStyleId,
-                        previewImage = bitmap,
-                    )
-                }
-                setColorStyle(selectedPaletteStyleId)
+                val userStylesAndPreviewList = defaultPaletteStyleProvider.collection()
+                    .map(PaletteStyle::id).map { paletteStyleId ->
+                        setPalette(paletteStyleId)
+                        delay(applyPaletteStyleDelay)
+                        val bitmap = createWatchFacePreview(complicationsPreviewData)
+                        UserStylesAndPreview(
+                            paletteStyleId = paletteStyleId,
+                            previewImage = bitmap,
+                        )
+                    }
+                setPalette(selectedPaletteStyleId)
                 Log.d(TAG, "Complete generation. setColor: $selectedPaletteStyleId")
                 userStylesAndPreviewList
             }.stateIn(
@@ -71,15 +68,15 @@ internal class WatchFaceConfigStateHolder(
         emitAll(
             combine(
                 editorSession.userStyle,
-                userStylesAndPreviewState.drop(1),
+                userStylesAndPreviewState,
             ) { userStyle, previews ->
                 yield()
 
                 val selectedPaletteStyleId = userStyle.getSelectedPaletteStyleIdentifier()
 
                 EditWatchFaceUiState.Success(
-                        selectedPaletteStyleId = selectedPaletteStyleId,
-                        previews = previews
+                    selectedPaletteStyleId = selectedPaletteStyleId,
+                    previews = previews
                 )
             }
         )
@@ -88,16 +85,6 @@ internal class WatchFaceConfigStateHolder(
         started = SharingStarted.Eagerly,
         initialValue = EditWatchFaceUiState.Loading
     )
-
-    private fun extractsUserStyles(userStyleSchema: UserStyleSchema) {
-        for (setting in userStyleSchema.userStyleSettings) {
-            when (setting.id) {
-                COLOR_STYLE_SETTING -> {
-                    colorStyleKey = setting as UserStyleSetting.ListUserStyleSetting
-                }
-            }
-        }
-    }
 
     private fun createWatchFacePreview(
         complicationsPreviewData: Map<Int, ComplicationData>
@@ -115,7 +102,7 @@ internal class WatchFaceConfigStateHolder(
             instant = editorSession.previewReferenceInstant,
             slotIdToComplicationData = complicationsPreviewData
         ).let { bitmap ->
-            if (activity.resources.configuration.isScreenRound) {
+            if (isScreenRound) {
                 bitmap.makeCircle()
             } else {
                 bitmap.makeRoundedAngles()
@@ -125,39 +112,31 @@ internal class WatchFaceConfigStateHolder(
         return bitmap
     }
 
-    fun setComplication(complicationLocation: Int) = scope.launch(Dispatchers.Main.immediate) {
+    fun chooseComplication(complicationLocation: Int) = scope.launch(Dispatchers.Main.immediate) {
         editorSession.openComplicationDataSourceChooser(complicationLocation)
     }
 
-    fun setColorStyle(newColorStyleId: PaletteStyle.Identifier) {
-        val userStyleSettingList = editorSession.userStyleSchema.userStyleSettings
-        val colorUserStyleSetting = userStyleSettingList.firstOrNull { userStyleSetting ->
-            userStyleSetting.id == COLOR_STYLE_SETTING
-        }.let { it as? UserStyleSetting.ListUserStyleSetting } ?: return
-        colorUserStyleSetting.options
-            .firstOrNull { option ->
-                option.id.toString() == newColorStyleId.value
-            }
-            ?.also { option -> setUserStyleOption(colorStyleKey, option) }
-    }
-
-    private fun setUserStyleOption(
-        userStyleSetting: UserStyleSetting,
-        userStyleOption: UserStyleSetting.Option
-    ) {
-        val mutableUserStyle = editorSession.userStyle.value.toMutableUserStyle()
-        mutableUserStyle[userStyleSetting] = userStyleOption
-        editorSession.userStyle.value = mutableUserStyle.toUserStyle()
-    }
+    fun setPalette(newColorStyleId: PaletteStyle.Identifier) =
+        editorSession.userStyle.setNewOptionId(COLOR_STYLE_SETTING) { option ->
+            option.id.toString() == newColorStyleId.value
+        }
 
     private fun UserStyle.getSelectedPaletteStyleIdentifier(): PaletteStyle.Identifier =
-        PaletteStyle.Identifier(requireNotNull(this[colorStyleKey]?.id?.toString()))
+        PaletteStyle.Identifier(
+            requireNotNull(
+                this.findSelectedOption(COLOR_STYLE_SETTING).toString()
+            )
+        )
 
     sealed class EditWatchFaceUiState {
         data class Success(
-                val selectedPaletteStyleId: PaletteStyle.Identifier,
-                val previews: List<UserStylesAndPreview>,
-        ) : EditWatchFaceUiState()
+            val selectedPaletteStyleId: PaletteStyle.Identifier,
+            val previews: List<UserStylesAndPreview>,
+        ) : EditWatchFaceUiState() {
+            fun getSelectedPosition(): Int = previews.indexOfFirst { userStylesAndPreview ->
+                userStylesAndPreview.paletteStyleId == selectedPaletteStyleId
+            }
+        }
 
         object Loading : EditWatchFaceUiState()
     }
@@ -169,5 +148,6 @@ internal class WatchFaceConfigStateHolder(
 
     companion object {
         private const val TAG = "WatchFaceConfigStateHolder"
+        private val DEFAULT_APPLY_PALETTE_STYLE_DELAY = 100.milliseconds
     }
 }

@@ -8,20 +8,26 @@ import androidx.recyclerview.widget.RecyclerView
 import by.bulba.watch.elektronika.data.watchface.PaletteStyle
 import by.bulba.watch.elektronika.databinding.PaletteConfigItemBinding
 
-internal class PaletteConfigAdapter : RecyclerView.Adapter<PaletteConfigAdapter.Holder>() {
+internal class PaletteConfigAdapter(
+    private val leftComplicationClickListener: OnComplicationClickListener? = null,
+    private val rightComplicationClickListener: OnComplicationClickListener? = null,
+) : RecyclerView.Adapter<PaletteConfigAdapter.Holder>() {
 
     private val items: MutableList<PaletteItem> = mutableListOf()
 
-    fun interface OnPaletteItemClickListener {
-        fun onItemClicked(menuItem: PaletteItem)
+    fun interface OnComplicationClickListener {
+        fun onComplicationClick()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder = Holder(
         PaletteConfigItemBinding.inflate(LayoutInflater.from(parent.context))
     ).apply {
-//        this.binding.root.setOnClickListener {
-//            this.getTag()?.also { item -> callback?.onItemClicked(item) }
-//        }
+        this.binding.leftComplication.setOnClickListener {
+            leftComplicationClickListener?.onComplicationClick()
+        }
+        this.binding.rightComplication.setOnClickListener {
+            rightComplicationClickListener?.onComplicationClick()
+        }
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -38,19 +44,18 @@ internal class PaletteConfigAdapter : RecyclerView.Adapter<PaletteConfigAdapter.
         this.notifyDataSetChanged()
     }
 
+    fun getItem(index: Int): PaletteItem = items[index]
+
     class Holder(
         internal val binding: PaletteConfigItemBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PaletteItem) {
-            //binding.watchFace.setImageBitmap(item.image)
-            binding.leftComplication.text = item.domainMeta.value
+            binding.watchFace.setImageBitmap(item.image)
         }
-
-        fun getTag(): PaletteItem? = binding.root.tag as? PaletteItem
     }
 }
 
 internal data class PaletteItem(
-    //val image: Bitmap,
+    val image: Bitmap,
     val domainMeta: PaletteStyle.Identifier,
 )

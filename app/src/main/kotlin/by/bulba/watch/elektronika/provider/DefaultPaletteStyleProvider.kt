@@ -16,7 +16,10 @@ internal interface DefaultPaletteStyleProvider {
 }
 
 private class DefaultPaletteStyleProviderImpl : DefaultPaletteStyleProvider {
-    override fun collection(): List<PaletteStyle> = enumValues<PaletteStyle>().toList()
+    override fun collection(): List<PaletteStyle> = listOf(
+        PaletteStyle.PRIMARY,
+        PaletteStyle.SECONDARY,
+    )
 
     override fun getOrNull(id: PaletteStyle.Identifier): PaletteStyle? =
         collection().firstOrNull { paletteStyle -> paletteStyle.id == id }

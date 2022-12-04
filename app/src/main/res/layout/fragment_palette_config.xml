@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/elektronika__ambient__background_color"
+    android:background="@color/color_primary"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,6 +25,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/palette_config_item"
+            tools:visibility="invisible"
+            />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/elektronika__primary__background_color"
+            android:indeterminateTintMode="src_in"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -48,5 +63,6 @@
             app:spi_dotSelectedColor="@color/elektronika__primary__background_color"
             />
     </FrameLayout>
+
 </androidx.wear.widget.BoxInsetLayout>
 
