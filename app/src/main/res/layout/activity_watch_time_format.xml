@@ -4,5 +4,5 @@
     android:id="@+id/wear_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0f0"
+    android:background="@color/elektronika__primary__background_color"
     />

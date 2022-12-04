@@ -4,12 +4,13 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import by.bulba.watch.elektronika.data.watchface.DigitalClockTimeFormat
 import by.bulba.watch.elektronika.databinding.MenuItemBinding
-import by.bulba.watch.elektronika.utils.wrapper.TextWrapper
+import by.bulba.watch.elektronika.databinding.TimeFormatItemBinding
 
-internal class TimeFormatAdapter(
+internal class DigitalClockTimeFormatAdapter(
     private val callback: OnTimeFormatClickListener? = null
-) : RecyclerView.Adapter<TimeFormatAdapter.Holder>() {
+) : RecyclerView.Adapter<DigitalClockTimeFormatAdapter.Holder>() {
 
     private val items: MutableList<TimeFormatItem> = mutableListOf()
 
@@ -18,7 +19,7 @@ internal class TimeFormatAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder = Holder(
-        MenuItemBinding.inflate(LayoutInflater.from(parent.context))
+        TimeFormatItemBinding.inflate(LayoutInflater.from(parent.context))
     ).apply {
         this.binding.root.setOnClickListener {
             this.getTag()?.also { item -> callback?.onItemClicked(item) }
@@ -39,8 +40,10 @@ internal class TimeFormatAdapter(
         this.notifyDataSetChanged()
     }
 
-    class Holder(internal val binding: MenuItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(internal val binding: TimeFormatItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TimeFormatItem) {
+            binding.radioButton.isChecked = item.selected
+            binding.text.text = item.text
             binding.root.tag = item
         }
 
@@ -49,7 +52,8 @@ internal class TimeFormatAdapter(
 }
 
 internal data class TimeFormatItem(
-    val text: TextWrapper,
+    val text: String,
     val selected: Boolean,
+    val domainMetaData: DigitalClockTimeFormat.Identifier,
 )
 

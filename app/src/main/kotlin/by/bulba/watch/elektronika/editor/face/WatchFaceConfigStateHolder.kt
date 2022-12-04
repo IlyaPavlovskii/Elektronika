@@ -84,9 +84,9 @@ internal class WatchFaceConfigStateHolder(
             }
         )
     }.stateIn(
-        scope + Dispatchers.Main.immediate,
-        SharingStarted.Eagerly,
-            EditWatchFaceUiState.Loading
+        scope = scope + Dispatchers.Main.immediate,
+        started = SharingStarted.Eagerly,
+        initialValue = EditWatchFaceUiState.Loading
     )
 
     private fun extractsUserStyles(userStyleSchema: UserStyleSchema) {

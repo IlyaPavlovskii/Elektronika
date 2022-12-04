@@ -3,6 +3,7 @@ package by.bulba.watch.elektronika
 import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import android.view.SurfaceHolder
 import androidx.wear.watchface.CanvasType
 import androidx.wear.watchface.ComplicationSlotsManager
@@ -28,6 +29,7 @@ import by.bulba.watch.elektronika.repository.platform.UserStyleSchemaBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 
 internal class ElektronikaWatchFaceService : WatchFaceService() {
 
@@ -40,6 +42,8 @@ internal class ElektronikaWatchFaceService : WatchFaceService() {
     private var batteryReceiver: BroadcastReceiver? = null
 
     override fun onDestroy() {
+        Log.d("ElektronikaWatchFaceService", "onDestroy()")
+        scope.cancel()
         batteryReceiver?.also(::unregisterReceiver)
         batteryReceiver = null
         super.onDestroy()
@@ -109,6 +113,7 @@ internal class ElektronikaWatchFaceService : WatchFaceService() {
             )
         )
         batteryReceiver = BatteryBroadcastReceiver(repository).also { receiver ->
+            if (batteryReceiver != null) unregisterReceiver(batteryReceiver)
             registerReceiver(receiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         }
         return repository
