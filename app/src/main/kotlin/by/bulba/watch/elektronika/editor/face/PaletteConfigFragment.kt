@@ -2,28 +2,28 @@ package by.bulba.watch.elektronika.editor.face
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
+import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import by.bulba.watch.elektronika.R
-import by.bulba.watch.elektronika.databinding.ActivityWatchFaceConfigBinding
+import by.bulba.watch.elektronika.databinding.FragmentPaletteConfigBinding
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-internal class WatchFaceConfigActivity : ComponentActivity(R.layout.activity_watch_face_config) {
+internal class PaletteConfigFragment : Fragment(R.layout.fragment_palette_config) {
     private val stateHolder: WatchFaceConfigStateHolder by lazy {
-        WatchFaceConfigStateHolder(lifecycleScope, this)
+        WatchFaceConfigStateHolder(lifecycleScope, requireActivity())
     }
 
-    private val binding: ActivityWatchFaceConfigBinding by lazy(LazyThreadSafetyMode.NONE) {
-        ActivityWatchFaceConfigBinding.inflate(this.layoutInflater)
+    private val binding: FragmentPaletteConfigBinding by lazy(LazyThreadSafetyMode.NONE) {
+        FragmentPaletteConfigBinding.inflate(this.layoutInflater)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         stateHolder.uiState
-                .onEach { uiState: WatchFaceConfigStateHolder.EditWatchFaceUiState ->
-                    Log.d(TAG, "StateFlow Loading: $uiState")
+            .onEach { uiState: WatchFaceConfigStateHolder.EditWatchFaceUiState ->
+                Log.d(TAG, "StateFlow Loading: $uiState")
 //                    when (uiState) {
 //                        is WatchFaceConfigStateHolder.EditWatchFaceUiState.Loading -> {
 //                            Log.d(TAG, "StateFlow Loading")
@@ -36,7 +36,7 @@ internal class WatchFaceConfigActivity : ComponentActivity(R.layout.activity_wat
 //                            })
 //                        }
 //                    }
-                }.launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
     }
 
     companion object {

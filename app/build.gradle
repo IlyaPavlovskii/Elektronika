@@ -42,24 +42,17 @@ android {
 
 dependencies {
     implementation libs.androidx.core.ktx
-
-    // Kotlin components
     implementation libs.kotlinx.coroutines.core
     implementation libs.kotlinx.coroutines.android
-
     implementation libs.androidx.activity.ktx
-
-    // Lifecycle components
     implementation libs.androidx.lifecycle.runtime.ktx
     implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
 
-    // Material components
     implementation libs.android.material
 
-    // Wear libraries
     implementation libs.androidx.wear
-
-    // Watch face specific libraries
     implementation libs.wear.watchface.complications.data
     implementation libs.wear.watchface.complications.data.source
 

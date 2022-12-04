@@ -75,7 +75,7 @@
         </activity>
 
         <activity
-            android:name=".editor.face.WatchFaceConfigActivity"
+            android:name=".editor.face.PaletteConfigFragment"
             android:exported="true"
             android:label="@string/elektronika_watch_face_config_label"
             >
@@ -87,7 +87,7 @@
         </activity>
 
         <activity
-            android:name=".editor.format.WatchTimeFormatActivity"
+            android:name=".editor.format.TimeFormatFragment"
             android:exported="true"
             android:label="@string/elektronika_watch_face_config_label"
             >

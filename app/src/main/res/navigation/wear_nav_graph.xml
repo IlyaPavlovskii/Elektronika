@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wear_nav_graph"
+    app:startDestination="@id/root"
+    >
+
+    <fragment
+        android:id="@+id/root"
+        android:name="by.bulba.watch.elektronika.editor.root.RootSettingsFragment"
+        android:label="RootSettingsFragment"
+        tools:layout="@layout/fragment_settings_root"
+        >
+        <action
+            android:id="@+id/to_time_format"
+            app:destination="@id/time_format"
+            />
+        <action
+            android:id="@+id/to_palette_config"
+            app:destination="@id/palette_config"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/time_format"
+        android:name="by.bulba.watch.elektronika.editor.format.TimeFormatFragment"
+        android:label="TimeFormatFragment"
+        tools:layout="@layout/fragment_time_format"
+        />
+
+    <fragment
+        android:id="@+id/palette_config"
+        android:name="by.bulba.watch.elektronika.editor.face.PaletteConfigFragment"
+        android:label="PaletteConfigFragment"
+        tools:layout="@layout/fragment_palette_config"
+        />
+
+</navigation>
