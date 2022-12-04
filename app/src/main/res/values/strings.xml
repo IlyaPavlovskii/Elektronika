@@ -45,4 +45,6 @@
     <string name="elektronika__cd_menu_item_icon">Menu item icon</string>
     <string name="elektronika__menu_item_watch_face">Watch Face</string>
     <string name="elektronika__menu_item_time_format">Time format</string>
+    <string name="elektronika__selected">Selected</string>
+    <string name="elektronika__select">Select</string>
 </resources>

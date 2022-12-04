@@ -11,6 +11,7 @@ compose = "1.2.0"
 ktlint = "0.46.1"
 org-jetbrains-kotlin = "1.7.20"
 org-jetbrains-kotlinx = "1.6.4"
+tinkoff-scrollingpagerindicator = "1.2.4"
 
 [libraries]
 android-lint-gradle = "com.android.tools.lint:lint-gradle:30.3.1"
@@ -37,6 +38,7 @@ wear-watchface-complications-rendering = { module = "androidx.wear.watchface:wat
 wear-watchface-data = { module = "androidx.wear.watchface:watchface-data", version.ref = "androidx-wear-watchface" }
 wear-watchface-editor = { module = "androidx.wear.watchface:watchface-editor", version.ref = "androidx-wear-watchface" }
 wear-watchface-style = { module = "androidx.wear.watchface:watchface-style", version.ref = "androidx-wear-watchface" }
+tinkoff-scrollingpagerindicator = { module = "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator", version.ref = "tinkoff-scrollingpagerindicator" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

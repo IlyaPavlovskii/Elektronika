@@ -1,8 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.WearableRecyclerView
+<androidx.wear.widget.BoxInsetLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/wear_recycler_view"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f00"
-    />
+    android:background="@color/elektronika__ambient__background_color"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:boxedEdges="bottom"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/palette_config_item"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        app:boxedEdges="left|right"
+        >
+
+        <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginHorizontal="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:spi_dotColor="@color/elektronika__primary__secondary_background_color"
+            app:spi_dotSelectedColor="@color/elektronika__primary__background_color"
+            />
+    </FrameLayout>
+</androidx.wear.widget.BoxInsetLayout>
+

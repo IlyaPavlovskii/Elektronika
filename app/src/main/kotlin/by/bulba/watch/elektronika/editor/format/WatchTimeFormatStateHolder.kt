@@ -1,14 +1,13 @@
 package by.bulba.watch.elektronika.editor.format
 
-import android.util.Log
 import androidx.wear.watchface.editor.EditorSession
 import by.bulba.watch.elektronika.data.converter.toOptionId
 import by.bulba.watch.elektronika.data.watchface.DigitalClockTimeFormat
 import by.bulba.watch.elektronika.editor.root.WatchSettingsRootHolder
 import by.bulba.watch.elektronika.repository.DefaultDigitalClockTimeFormatProvider
 import by.bulba.watch.elektronika.repository.platform.TIME_FORMAT_SETTING
-import by.bulba.watch.elektronika.utils.findKey
 import by.bulba.watch.elektronika.utils.findSelectedOption
+import by.bulba.watch.elektronika.utils.setNewOptionId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -45,8 +44,6 @@ internal class WatchTimeFormatStateHolder(
                     ?.id?.toString()?.let(DigitalClockTimeFormat::Identifier)
                     ?: defaultDigitalClockTimeFormatProvider.default().id
 
-                Log.d("SelectedId", "State: $watchTimeFormatState ")
-
                 watchTimeFormatState.copy(
                     items = watchTimeFormatState.items.map { timeFormatItem ->
                         timeFormatItem.copy(
@@ -62,22 +59,16 @@ internal class WatchTimeFormatStateHolder(
         initialValue = WatchTimeFormatState()
     )
 
-    fun setDigitalClockTimeFormat(id: DigitalClockTimeFormat.Identifier) {
-        val userStyle = editorSession.userStyle.value
-        val key = requireNotNull(userStyle.findKey(TIME_FORMAT_SETTING))
-        val mutableUserStyle = editorSession.userStyle.value.toMutableUserStyle()
-        val newOption = key.options.first { option ->
-            option.id == id.toOptionId()
+    fun setDigitalClockTimeFormat(newSelectionId: DigitalClockTimeFormat.Identifier) =
+        editorSession.userStyle.setNewOptionId(id = TIME_FORMAT_SETTING) { option ->
+            option.id == newSelectionId.toOptionId()
         }
-        mutableUserStyle[key] = newOption
-        editorSession.userStyle.value = mutableUserStyle.toUserStyle()
-    }
 
     private fun DigitalClockTimeFormat.toTimeFormatItem(
         selectedId: DigitalClockTimeFormat.Identifier
     ): TimeFormatItem = TimeFormatItem(
         text = zonedDateTime.format(this.dateTimeFormatter),
-        selected = this.id == id,
+        selected = this.id == selectedId,
         domainMetaData = id,
     )
 
