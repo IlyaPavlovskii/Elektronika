@@ -37,7 +37,6 @@ internal data class WatchFaceData(
 
     enum class Mode(
         val rendererTypes: Set<RendererDrawerType>,
-        val snapshotTime: String,
     ) {
         AMBIENT(
             rendererTypes = setOf(
@@ -46,7 +45,6 @@ internal data class WatchFaceData(
                 RendererDrawerType.DigitalClock,
                 RendererDrawerType.BottomLabel,
             ),
-            snapshotTime = "00:00",
         ),
         ACTIVE(
             rendererTypes = setOf(
@@ -57,7 +55,6 @@ internal data class WatchFaceData(
                 RendererDrawerType.Battery,
                 RendererDrawerType.BottomLabel
             ),
-            snapshotTime = "00:00:00",
         ),
         ;
     }

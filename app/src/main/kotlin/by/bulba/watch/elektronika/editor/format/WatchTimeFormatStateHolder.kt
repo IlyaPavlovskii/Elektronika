@@ -1,14 +1,14 @@
 package by.bulba.watch.elektronika.editor.format
 
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.wear.watchface.editor.EditorSession
-import androidx.wear.watchface.style.UserStyle
-import androidx.wear.watchface.style.UserStyleSetting
+import by.bulba.watch.elektronika.data.converter.toOptionId
 import by.bulba.watch.elektronika.data.watchface.DigitalClockTimeFormat
+import by.bulba.watch.elektronika.editor.root.WatchSettingsRootHolder
 import by.bulba.watch.elektronika.repository.DefaultDigitalClockTimeFormatProvider
-import by.bulba.watch.elektronika.repository.platform.COLOR_STYLE_SETTING
 import by.bulba.watch.elektronika.repository.platform.TIME_FORMAT_SETTING
+import by.bulba.watch.elektronika.utils.findKey
+import by.bulba.watch.elektronika.utils.findSelectedOption
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,15 +23,12 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 internal class WatchTimeFormatStateHolder(
-    private val activity: ComponentActivity,
     scope: CoroutineScope,
+    private val editorSession: EditorSession = WatchSettingsRootHolder.getEditorSession(),
     private val defaultDigitalClockTimeFormatProvider: DefaultDigitalClockTimeFormatProvider,
 ) {
-    private lateinit var editorSession: EditorSession
-    val state: StateFlow<WatchTimeFormatState> = flow<WatchTimeFormatState> {
-        Log.d("WatchTime", "onCreate4")
-        editorSession = EditorSession.createOnWatchEditorSession(activity = activity)
-        Log.d("WatchTime", "onCreate5")
+
+    val state: StateFlow<WatchTimeFormatState> = flow {
         emitAll(
             combine(
                 flowOf(
@@ -44,16 +41,16 @@ internal class WatchTimeFormatStateHolder(
                 ),
                 editorSession.userStyle
             ) { watchTimeFormatState, userStyle ->
-                Log.d("WatchTime", "State: $watchTimeFormatState ")
-                val selectedId = userStyle[TIME_FORMAT_SETTING]
-                    as? UserStyleSetting.ListUserStyleSetting.ListOption
-                    ?: return@combine watchTimeFormatState
-                Log.d("WatchTime", "SelectIf: $selectedId")
-                val identifier = DigitalClockTimeFormat.Identifier(selectedId.id.toString())
+                val selectedId = userStyle.findSelectedOption(TIME_FORMAT_SETTING)
+                    ?.id?.toString()?.let(DigitalClockTimeFormat::Identifier)
+                    ?: defaultDigitalClockTimeFormatProvider.default().id
+
+                Log.d("SelectedId", "State: $watchTimeFormatState ")
+
                 watchTimeFormatState.copy(
                     items = watchTimeFormatState.items.map { timeFormatItem ->
                         timeFormatItem.copy(
-                            selected = timeFormatItem.domainMetaData == identifier,
+                            selected = timeFormatItem.domainMetaData == selectedId,
                         )
                     }
                 )
@@ -66,12 +63,18 @@ internal class WatchTimeFormatStateHolder(
     )
 
     fun setDigitalClockTimeFormat(id: DigitalClockTimeFormat.Identifier) {
-        val mutableUserStyle = editorSession.userStyle.value
-        val options = mutableUserStyle[TIME_FORMAT_SETTING]
+        val userStyle = editorSession.userStyle.value
+        val key = requireNotNull(userStyle.findKey(TIME_FORMAT_SETTING))
+        val mutableUserStyle = editorSession.userStyle.value.toMutableUserStyle()
+        val newOption = key.options.first { option ->
+            option.id == id.toOptionId()
+        }
+        mutableUserStyle[key] = newOption
+        editorSession.userStyle.value = mutableUserStyle.toUserStyle()
     }
 
     private fun DigitalClockTimeFormat.toTimeFormatItem(
-        id: DigitalClockTimeFormat.Identifier
+        selectedId: DigitalClockTimeFormat.Identifier
     ): TimeFormatItem = TimeFormatItem(
         text = zonedDateTime.format(this.dateTimeFormatter),
         selected = this.id == id,
@@ -79,7 +82,7 @@ internal class WatchTimeFormatStateHolder(
     )
 
     companion object {
-        private val zonedDateTime = ZonedDateTime.of(1985, 10, 26, 9, 0, 0, 0, ZoneOffset.UTC)
+        private val zonedDateTime = ZonedDateTime.of(1997, 8, 29, 2, 14, 39, 0, ZoneOffset.UTC)
     }
 }
 

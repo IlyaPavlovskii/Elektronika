@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import by.bulba.watch.elektronika.data.watchface.DigitalClockTimeFormat
-import by.bulba.watch.elektronika.databinding.MenuItemBinding
 import by.bulba.watch.elektronika.databinding.TimeFormatItemBinding
 
 internal class DigitalClockTimeFormatAdapter(
@@ -40,7 +39,9 @@ internal class DigitalClockTimeFormatAdapter(
         this.notifyDataSetChanged()
     }
 
-    class Holder(internal val binding: TimeFormatItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(
+        internal val binding: TimeFormatItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TimeFormatItem) {
             binding.radioButton.isChecked = item.selected
             binding.text.text = item.text

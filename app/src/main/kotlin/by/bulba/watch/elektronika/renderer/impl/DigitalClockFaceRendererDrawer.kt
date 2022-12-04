@@ -27,12 +27,18 @@ internal class DigitalClockFaceRendererDrawer(
         val clockPaint = lastKnownClockPaint ?: context.createTextPaint(
             bounds = bounds,
             textColor = watchFaceData.getPalette().clockTextColor,
-            textFactor = ElektronikaFactors.DigitalClock.CLOCK_TEXT_SIZE_FACTOR,
+            textFactor = watchFaceData.digitalClock.digitalClockTimeFormat.clockTextSizeFactor,
         ) { lastKnownClockPaint = it;it }
 
         val timeBounds: Rect = formattedClockBounds ?: run {
             formattedClockBounds = Rect()
-            val snapshotTime = watchFaceData.mode.snapshotTime
+            val snapshotTime = when (watchFaceData.mode) {
+                WatchFaceData.Mode.AMBIENT ->
+                    watchFaceData.digitalClock.digitalClockTimeFormat.ambientSnapshotTime
+
+                WatchFaceData.Mode.ACTIVE ->
+                    watchFaceData.digitalClock.digitalClockTimeFormat.snapshotTime
+            }
             clockPaint.getTextBounds(snapshotTime, 0, snapshotTime.length, formattedClockBounds)
             requireNotNull(formattedClockBounds)
         }

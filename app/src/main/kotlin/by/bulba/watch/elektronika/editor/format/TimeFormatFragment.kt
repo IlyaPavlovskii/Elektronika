@@ -16,7 +16,6 @@ internal class TimeFormatFragment : Fragment(R.layout.fragment_time_format) {
 
     private val holder: WatchTimeFormatStateHolder by lazy(LazyThreadSafetyMode.NONE) {
         WatchTimeFormatStateHolder(
-            activity = requireActivity(),
             scope = lifecycleScope,
             defaultDigitalClockTimeFormatProvider = DefaultDigitalClockTimeFormatProvider.create(),
         )
@@ -38,9 +37,9 @@ internal class TimeFormatFragment : Fragment(R.layout.fragment_time_format) {
             this.layoutManager = WearableLinearLayoutManager(this.context)
             this.adapter = timeFormatAdapter
         }
-//        holder.state.onEach { formatState ->
-//            Log.d("WatchTime", "onCreate3: $formatState")
-//            timeFormatAdapter.setItems(formatState.items)
-//        }.launchIn(lifecycleScope)
+        holder.state.onEach { formatState ->
+            Log.d("WatchTime", "onCreate3: $formatState")
+            timeFormatAdapter.setItems(formatState.items)
+        }.launchIn(lifecycleScope)
     }
 }

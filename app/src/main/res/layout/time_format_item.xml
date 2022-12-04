@@ -5,33 +5,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/elektronika__primary__background_color"
+    android:padding="5dp"
+    android:background="?attr/selectableItemBackground"
+    tools:background="@color/elektronika__primary__background_color"
     tools:layout_gravity="center_vertical"
     >
 
     <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/radio_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="48dp"
-        tools:layout_width="48dp"
+        android:clickable="false"
+        android:focusable="false"
         />
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:fontFamily="@font/technology_bold"
         android:maxLines="1"
         android:textColor="@color/white"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="@id/radio_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@id/radio_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/radio_button"
+        app:layout_constraintBottom_toBottomOf="@id/radio_button"
         tools:text="01:23:45"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
