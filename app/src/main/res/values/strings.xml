@@ -17,6 +17,7 @@
     <!-- Name of watchface style [CHAR LIMIT=20] -->
     <string name="primary_style_name">Primary Style</string>
     <string name="secondary_style_name">Secondary Style</string>
+    <string name="primary_dark_style_name">Primary Dark</string>
 
     <!-- Name of watchface style [CHAR LIMIT=20] -->
     <string name="time_format__hours_12">Hours 12 format</string>

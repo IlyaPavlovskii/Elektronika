@@ -1,6 +1,5 @@
 package by.bulba.watch.elektronika.data.watchface
 
-import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import by.bulba.watch.elektronika.data.RelativeFactor
 import java.time.format.DateTimeFormatter

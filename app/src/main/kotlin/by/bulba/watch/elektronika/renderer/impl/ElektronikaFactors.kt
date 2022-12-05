@@ -23,6 +23,7 @@ internal object ElektronikaFactors {
     }
     object DigitalClock {
         val START_DATE_Y_FACTOR = 0.43.rf
+        val START_DATE_X_FACTOR = 0.3.rf
         val START_CLOCK_Y_FACTOR = 0.6.rf
         val DATE_TEXT_SIZE_FACTOR = 0.08.rf
     }

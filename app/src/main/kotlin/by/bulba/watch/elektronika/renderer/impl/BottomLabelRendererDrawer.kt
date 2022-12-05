@@ -23,7 +23,7 @@ internal class BottomLabelRendererDrawer(
             textColor = watchFaceData.getPalette().labelTextColor,
             textFactor = ElektronikaFactors.BottomLabel.TEXT_SIZE_FACTOR,
         ) { paint = it; it }
-        val text = watchFaceData.bottomLabel.label.get(context).toString()
+        val text = context.getString(watchFaceData.bottomLabel.label)
         if (labelBounds == null) {
             val newLabelBounds = Rect()
             textPaint.getTextBounds(text, 0, text.length, newLabelBounds)

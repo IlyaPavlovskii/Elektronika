@@ -29,8 +29,8 @@ private class DefaultDigitalClockTimeFormatProviderImpl :
                 displayNameResourceId = R.string.time_format__hours_24,
                 dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss"),
                 ambientTimeFormatter = DateTimeFormatter.ofPattern("HH:mm"),
-                snapshotTime = "00:00:00",
-                ambientSnapshotTime = "00:00",
+                snapshotTime = "2:55:22",
+                ambientSnapshotTime = "0:00",
                 clockTextSizeFactor = 0.16.rf,
             ),
             DigitalClockTimeFormat(

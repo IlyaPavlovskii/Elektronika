@@ -20,13 +20,13 @@ internal class CenterRectRendererDrawer(
 
     private val fillPaint = Paint().apply {
         style = Paint.Style.FILL
-        color = watchFaceData.getPalette().secondaryBackgroundColor.get(context)
+        color = context.getColor(watchFaceData.getPalette().secondaryBackgroundColor)
     }
     private val strokePaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.STROKE
-        strokeWidth = watchFaceData.centerRect.strokeWidth.getFloat(context)
-        color = watchFaceData.getPalette().strokeColor.get(context)
+        strokeWidth = context.resources.getDimension(watchFaceData.centerRect.strokeWidth)
+        color = context.getColor(watchFaceData.getPalette().strokeColor)
     }
     private var lastKnownPath: Path? = null
 

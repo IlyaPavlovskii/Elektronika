@@ -57,7 +57,6 @@ internal class WatchFaceConfigStateHolder(
                         )
                     }
                 setPalette(selectedPaletteStyleId)
-                Log.d(TAG, "Complete generation. setColor: $selectedPaletteStyleId")
                 userStylesAndPreviewList
             }.stateIn(
                 scope = scope + Dispatchers.Main.immediate,

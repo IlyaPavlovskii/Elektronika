@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<drawable
+    class="androidx.wear.watchface.complications.rendering.ComplicationDrawable"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:borderColor="@color/maroon_50"
+    app:borderStyle="solid"
+    app:borderWidth="1dp"
+    app:highlightColor="@color/maroon_30"
+    app:iconColor="@color/maroon_light"
+    app:rangedValuePrimaryColor="@color/maroon_70"
+    app:rangedValueRingWidth="2dp"
+    app:rangedValueSecondaryColor="@color/maroon_30"
+    app:textColor="@color/maroon_light"
+    app:textTypeface="sans-serif-condensed"
+    app:titleColor="@color/maroon_60"
+    app:titleTypeface="sans-serif-condensed">
+  <ambient
+      app:borderColor="@color/maroon_50"
+      app:iconColor="@color/maroon_light"
+      app:textColor="@color/maroon_light"
+      app:titleColor="@color/maroon_70"
+      app:rangedValuePrimaryColor="@color/maroon_light"
+      app:rangedValueSecondaryColor="@color/transparent" />
+</drawable>

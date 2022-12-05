@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.RectF
+import androidx.appcompat.content.res.AppCompatResources
 import by.bulba.watch.elektronika.data.watchface.WatchFaceData
 import by.bulba.watch.elektronika.renderer.RendererDrawer
 import by.bulba.watch.elektronika.renderer.calcFactor
@@ -19,20 +20,21 @@ internal class BatteryRendererDrawer(
     private val corners: FloatArray = DEFAULT_CORNERS,
 ) : RendererDrawer {
 
-    private val iconDrawable = watchFaceData.battery.getIcon().get(context)
-        .let { drawable ->
-            drawable.setTint(watchFaceData.getPalette().strokeColor.get(context))
-            drawable
-        }
+    private val iconDrawable = requireNotNull(
+        AppCompatResources.getDrawable(context, watchFaceData.battery.getIcon())
+    ).let { drawable ->
+        drawable.setTint(context.getColor(watchFaceData.getPalette().strokeColor))
+        drawable
+    }
     private val levelPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = watchFaceData.getPalette().strokeColor.get(context)
+        color = context.getColor(watchFaceData.getPalette().strokeColor)
     }
     private val layerPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = watchFaceData.getPalette().layerColor.get(context)
+        color = context.getColor(watchFaceData.getPalette().layerColor)
     }
     private var levelTextPaint: Paint? = null
     private var lastKnownLayerPath: Path? = null

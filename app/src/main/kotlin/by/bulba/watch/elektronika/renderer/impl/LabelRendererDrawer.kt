@@ -24,14 +24,13 @@ internal class LabelRendererDrawer(
             textColor = watchFaceData.getPalette().labelTextColor,
             textFactor = ElektronikaFactors.Label.TEXT_SIZE_FACTOR,
         ) { paint = it; it }
-        val text = watchFaceData.label.label.get(context).toString()
+        val text = context.getString(watchFaceData.label.label)
         if (labelBounds == null) {
             val newLabelBounds = Rect()
             textPaint.getTextBounds(text, 0, text.length, newLabelBounds)
             labelBounds = newLabelBounds
         }
         val safeLabelBounds = requireNotNull(labelBounds)
-
         canvas.drawText(
             text,
             bounds.centerX().toFloat() - (safeLabelBounds.width() / 2),

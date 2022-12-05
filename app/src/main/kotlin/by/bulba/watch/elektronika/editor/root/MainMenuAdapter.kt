@@ -3,13 +3,11 @@ package by.bulba.watch.elektronika.editor.root
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import by.bulba.watch.elektronika.R
 import by.bulba.watch.elektronika.databinding.MenuItemBinding
-import by.bulba.watch.elektronika.utils.wrapper.DrawableWrapper
-import by.bulba.watch.elektronika.utils.wrapper.TextWrapper
-import by.bulba.watch.elektronika.utils.wrapper.setImageDrawable
-import by.bulba.watch.elektronika.utils.wrapper.setText
 
 internal class MainMenuAdapter(
     argItems: List<MenuItem> = enumValues<MenuItem>().toList(),
@@ -46,7 +44,7 @@ internal class MainMenuAdapter(
 
     class Holder(internal val binding: MenuItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MenuItem) {
-            binding.icon.setImageDrawable(item.icon)
+            binding.icon.setImageResource(item.icon)
             binding.text.setText(item.text)
             binding.root.tag = item
         }
@@ -56,16 +54,16 @@ internal class MainMenuAdapter(
 }
 
 internal enum class MenuItem(
-    val icon: DrawableWrapper,
-    val text: TextWrapper,
+    @DrawableRes val icon: Int,
+    @StringRes val text: Int,
 ) {
     WATCH_FACE(
-        icon = DrawableWrapper.Id(R.drawable.baseline_watch_24),
-        text = TextWrapper.Id(R.string.elektronika__menu_item_watch_face),
+        icon = R.drawable.baseline_watch_24,
+        text = R.string.elektronika__menu_item_watch_face,
     ),
     TIME_FORMAT(
-        icon = DrawableWrapper.Id(R.drawable.baseline_watch_later_24),
-        text = TextWrapper.Id(R.string.elektronika__menu_item_time_format),
+        icon = R.drawable.baseline_watch_later_24,
+        text = R.string.elektronika__menu_item_time_format,
     ),
     ;
 }

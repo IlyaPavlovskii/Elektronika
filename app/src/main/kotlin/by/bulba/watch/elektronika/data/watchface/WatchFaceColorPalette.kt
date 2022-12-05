@@ -1,15 +1,15 @@
 package by.bulba.watch.elektronika.data.watchface
 
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import by.bulba.watch.elektronika.utils.wrapper.ColorWrapper
 
 internal data class WatchFaceColorPalette(
-    val labelTextColor: ColorWrapper,
-    val clockTextColor: ColorWrapper,
-    val strokeColor: ColorWrapper,
-    val backgroundColor: ColorWrapper,
-    val secondaryBackgroundColor: ColorWrapper,
-    val layerColor: ColorWrapper,
+    @ColorRes val labelTextColor: Int,
+    @ColorRes val clockTextColor: Int,
+    @ColorRes val strokeColor: Int,
+    @ColorRes val backgroundColor: Int,
+    @ColorRes val secondaryBackgroundColor: Int,
+    @ColorRes val layerColor: Int,
     @DrawableRes val complicationStyleDrawableId: Int,
 )
 

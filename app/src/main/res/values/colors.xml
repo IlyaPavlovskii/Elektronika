@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2020 The Android Open Source Project
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
 <resources>
     <!-- Main Style Colors -->
     <color name="color_primary">#707070</color>
@@ -28,24 +13,6 @@
     <color name="ambient_secondary_color">@color/white_50</color>
     <color name="ambient_background_color">@color/black</color>
     <color name="ambient_outer_element_color">@color/white_30</color>
-
-    <!-- Red Style -->
-    <color name="red_primary_color">@color/maroon_light</color>
-    <color name="red_secondary_color">@color/maroon_50</color>
-    <color name="red_background_color">@color/dark_gray</color>
-    <color name="red_outer_element_color">@color/maroon_30</color>
-
-    <!-- Green Style -->
-    <color name="green_primary_color">@color/light_green</color>
-    <color name="green_secondary_color">@color/dark_green</color>
-    <color name="green_background_color">@color/dark_gray</color>
-    <color name="green_outer_element_color">@color/light_green</color>
-
-    <!-- Blue Style -->
-    <color name="blue_primary_color">@color/light_blue</color>
-    <color name="blue_secondary_color">@color/dark_blue</color>
-    <color name="blue_background_color">@color/dark_gray</color>
-    <color name="blue_outer_element_color">@color/light_blue</color>
 
     <!-- White Style -->
     <color name="white_primary_color">@color/white_70</color>
@@ -109,12 +76,19 @@
     <color name="elektronika__primary__stroke_color">#fff</color>
     <color name="elektronika__primary__layer_color">#3D4C65</color>
 
-    <color name="elektronika__secondary__background_color">#ffff00</color>
-    <color name="elektronika__secondary__secondary_background_color">#ff0000</color>
+    <color name="elektronika__secondary__background_color">#3B1766</color>
+    <color name="elektronika__secondary__secondary_background_color">#DAD9C1</color>
     <color name="elektronika__secondary__label_text_color">#fff</color>
     <color name="elektronika__secondary__clock_text_color">#000</color>
     <color name="elektronika__secondary__stroke_color">#fff</color>
-    <color name="elektronika__secondary__layer_color">#3D4C65</color>
+    <color name="elektronika__secondary__layer_color">#4D3C61</color>
+
+    <color name="elektronika__primary_dark__background_color">#3B1766</color>
+    <color name="elektronika__primary_dark__secondary_background_color">#000</color>
+    <color name="elektronika__primary_dark__label_text_color">#D30808</color>
+    <color name="elektronika__primary_dark__clock_text_color">#D30808</color>
+    <color name="elektronika__primary_dark__stroke_color">#D30808</color>
+    <color name="elektronika__primary_dark__layer_color">#4D3C61</color>
 
 </resources>
 
