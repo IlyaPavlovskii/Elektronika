@@ -1,6 +1,7 @@
 package by.bulba.watch.elektronika.repository.platform
 
 import android.content.Context
+import android.graphics.drawable.Icon
 import androidx.wear.watchface.style.UserStyleSchema
 import androidx.wear.watchface.style.UserStyleSetting
 import androidx.wear.watchface.style.WatchFaceLayer
@@ -25,7 +26,7 @@ internal class UserStyleSchemaBuilder(
                 resources = context.resources,
                 displayNameResourceId = R.string.settings_display_name__colors_style_setting,
                 descriptionResourceId = R.string.settings_description__colors_style_setting,
-                icon = null,
+                icon = Icon.createWithResource(context, R.drawable.baseline_watch_24),
                 options = defaultPaletteStyleProvider.collection().map { paletteStyle ->
                     paletteStyle.toOptionList(context)
                 },
@@ -41,7 +42,7 @@ internal class UserStyleSchemaBuilder(
             resources = context.resources,
             displayNameResourceId = R.string.settings_display_name__time_format_setting,
             descriptionResourceId = R.string.settings_description__time_format,
-            icon = null,
+            icon = Icon.createWithResource(context, R.drawable.baseline_watch_later_24),
             options = defaultDigitalClockTimeFormatProvider.collection().map { timeFormatType ->
                 timeFormatType.toListOption(context)
             },

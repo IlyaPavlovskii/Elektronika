@@ -27,6 +27,7 @@ private class DefaultDigitalClockTimeFormatProviderImpl :
             DigitalClockTimeFormat(
                 id = DigitalClockTimeFormat.Identifier("hours_24"),
                 displayNameResourceId = R.string.time_format__hours_24,
+                iconResId = R.drawable.hours_24,
                 dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss"),
                 ambientTimeFormatter = DateTimeFormatter.ofPattern("HH:mm"),
                 snapshotTime = "2:55:22",
@@ -36,6 +37,7 @@ private class DefaultDigitalClockTimeFormatProviderImpl :
             DigitalClockTimeFormat(
                 id = DigitalClockTimeFormat.Identifier("hours_12"),
                 displayNameResourceId = R.string.time_format__hours_12,
+                iconResId = R.drawable.hours_12,
                 dateTimeFormatter = DateTimeFormatter.ofPattern("a hh:mm:ss"),
                 ambientTimeFormatter = DateTimeFormatter.ofPattern("a hh:mm"),
                 snapshotTime = "AM 00:00:00",

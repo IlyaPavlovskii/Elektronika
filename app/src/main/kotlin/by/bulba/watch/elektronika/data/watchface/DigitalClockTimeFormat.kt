@@ -1,5 +1,6 @@
 package by.bulba.watch.elektronika.data.watchface
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import by.bulba.watch.elektronika.data.RelativeFactor
 import java.time.format.DateTimeFormatter
@@ -7,6 +8,7 @@ import java.time.format.DateTimeFormatter
 internal data class DigitalClockTimeFormat(
     val id: Identifier,
     @StringRes val displayNameResourceId: Int,
+    @DrawableRes val iconResId: Int,
     val snapshotTime: String,
     val ambientSnapshotTime: String,
     val dateTimeFormatter: DateTimeFormatter,
