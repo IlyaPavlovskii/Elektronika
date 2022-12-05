@@ -24,8 +24,8 @@ internal class UserStyleSchemaBuilder(
             UserStyleSetting.ListUserStyleSetting(
                 id = COLOR_STYLE_SETTING,
                 resources = context.resources,
-                displayNameResourceId = R.string.settings_display_name__colors_style_setting,
-                descriptionResourceId = R.string.settings_description__colors_style_setting,
+                displayNameResourceId = R.string.settings_display_name__watch_face_setting,
+                descriptionResourceId = R.string.settings_description__watch_face_setting,
                 icon = Icon.createWithResource(context, R.drawable.baseline_watch_24),
                 options = defaultPaletteStyleProvider.collection().map { paletteStyle ->
                     paletteStyle.toOptionList(context)
