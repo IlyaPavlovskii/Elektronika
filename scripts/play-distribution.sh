@@ -1,0 +1,1 @@
+./gradlew :app:bundleRelease :app:signReleaseBundle copyArtifacts :app:uploadReleasePrivateBundle :app:publishReleaseListing

@@ -2,27 +2,43 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+    id 'com.github.triplet.play'
 }
 
 android {
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.example.android.wearable.alpha"
+        applicationId "by.bulba.watch.elektronika"
         minSdk 28
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.0.4"
     }
 
     buildFeatures {
         viewBinding true
     }
 
+    signingConfigs {
+        release {
+            def keystorePropertiesFile = rootProject.file("config/elektronika.properties")
+            def properties = new Properties()
+            properties.load(new FileInputStream(keystorePropertiesFile))
+
+            storeFile file(properties["store.path"])
+            keyAlias = properties["key.alias"]
+            storePassword properties["store.password"]
+            keyPassword properties["key.password"]
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
 
@@ -63,4 +79,14 @@ dependencies {
     implementation libs.wear.watchface.editor
     implementation libs.wear.watchface.style
     implementation libs.tinkoff.scrollingpagerindicator
+}
+
+play {
+    serviceAccountCredentials.set(file("../config/elektronika-service-account.json"))
+    track.set("internal")
+    userFraction.set(0.99D)
+    updatePriority.set(1) // in-app update priority [0-5]
+    releaseStatus.set(com.github.triplet.gradle.androidpublisher.ReleaseStatus.IN_PROGRESS)
+    defaultToAppBundles.set(true)
+    //artifactDir.set(file("build/artifacts"))
 }

@@ -1,6 +1,12 @@
 buildscript {
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+    }
     dependencies {
         classpath libs.kotlin.gradle.plugin
+        classpath "com.github.triplet.gradle:play-publisher:4.0.0-SNAPSHOT"
     }
 }
 
@@ -22,4 +28,11 @@ allprojects {
             licenseHeaderFile rootProject.file("../spotless/copyright.kt")
         }
     }
+}
+
+task copyArtifacts(type: Copy) {
+    println("Hello copyArtifacts")
+    from "app/build/outputs/bundle/release/"
+    from "app/build/outputs/mapping/release/"
+    into "build/artifacts/"
 }

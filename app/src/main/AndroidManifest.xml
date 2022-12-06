@@ -74,29 +74,5 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".editor.face.PaletteConfigFragment"
-            android:exported="true"
-            android:label="@string/elektronika_watch_face_config_label"
-            >
-            <intent-filter>
-                <action android:name="androidx.wear.watchface.editor.action.WATCH_FACE_EDITOR" />
-
-                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".editor.format.TimeFormatFragment"
-            android:exported="true"
-            android:label="@string/elektronika_watch_face_config_label"
-            >
-            <intent-filter>
-                <action android:name="androidx.wear.watchface.editor.action.WATCH_FACE_EDITOR" />
-
-                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION" />
-            </intent-filter>
-        </activity>
-
     </application>
 </manifest>
