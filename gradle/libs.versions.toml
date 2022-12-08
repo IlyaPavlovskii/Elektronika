@@ -12,6 +12,7 @@ ktlint = "0.46.1"
 org-jetbrains-kotlin = "1.7.20"
 org-jetbrains-kotlinx = "1.6.4"
 tinkoff-scrollingpagerindicator = "1.2.4"
+triplet = "3.7.0"
 
 [libraries]
 android-lint-gradle = "com.android.tools.lint:lint-gradle:30.3.1"
@@ -44,3 +45,4 @@ tinkoff-scrollingpagerindicator = { module = "ru.tinkoff.scrollingpagerindicator
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 com-diffplug-spotless = "com.diffplug.spotless:6.11.0"
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin" }
+com-github-triplet-play = { id = "com.github.triplet.play", version.ref = "triplet" }
