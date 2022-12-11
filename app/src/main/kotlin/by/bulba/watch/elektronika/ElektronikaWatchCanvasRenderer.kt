@@ -63,9 +63,6 @@ internal class ElektronikaWatchCanvasRenderer(
     private var rendererDrawer: RendererDrawer = createRendererDrawer(dataRepository.state.value)
 
     init {
-//        currentUserStyleRepository.userStyle
-//            .onEach(::updateWatchFaceData)
-//            .launchIn(scope)
         dataRepository.state
             .onEach { watchFaceData ->
                 rendererDrawer = createRendererDrawer(watchFaceData)

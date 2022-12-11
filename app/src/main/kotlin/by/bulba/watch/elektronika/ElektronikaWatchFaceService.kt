@@ -38,11 +38,11 @@ internal class ElektronikaWatchFaceService : WatchFaceService() {
         DefaultPaletteStyleProvider.create()
     private val defaultDigitalClockTimeFormatProvider: DefaultDigitalClockTimeFormatProvider =
         DefaultDigitalClockTimeFormatProvider.create()
+    private var dataStateRepository: WatchFaceDataStateRepository? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var batteryReceiver: BroadcastReceiver? = null
 
     override fun onDestroy() {
-        Log.d("ElektronikaWatchFaceService", "onDestroy()")
         scope.cancel()
         batteryReceiver?.also(::unregisterReceiver)
         batteryReceiver = null
@@ -55,8 +55,16 @@ internal class ElektronikaWatchFaceService : WatchFaceService() {
     override fun createComplicationSlotsManager(
         currentUserStyleRepository: CurrentUserStyleRepository
     ): ComplicationSlotsManager {
+        if (dataStateRepository == null) {
+            dataStateRepository = createWatchFaceDataRepository(
+                currentUserStyleRepository = currentUserStyleRepository
+            )
+        }
+
         val canvasComplicationFactory = DefaultCanvasComplicationFactory(
             context = applicationContext,
+            drawableId = requireNotNull(dataStateRepository).state.value
+                .getPalette().complicationStyleDrawableId
         )
         return DefaultComplicationSlotsManagerFactory(
             LeftComplicationSlotFactory(
@@ -74,9 +82,6 @@ internal class ElektronikaWatchFaceService : WatchFaceService() {
         complicationSlotsManager: ComplicationSlotsManager,
         currentUserStyleRepository: CurrentUserStyleRepository
     ): WatchFace {
-        val repository = createWatchFaceDataRepository(
-            currentUserStyleRepository = currentUserStyleRepository,
-        )
         val renderer = ElektronikaWatchCanvasRenderer(
             context = applicationContext,
             surfaceHolder = surfaceHolder,
@@ -84,10 +89,9 @@ internal class ElektronikaWatchFaceService : WatchFaceService() {
             complicationSlotsManager = complicationSlotsManager,
             currentUserStyleRepository = currentUserStyleRepository,
             canvasType = CanvasType.HARDWARE,
-            dataRepository = repository,
+            dataRepository = requireNotNull(dataStateRepository),
             scope = scope,
         )
-
         return WatchFace(
             watchFaceType = WatchFaceType.DIGITAL,
             renderer = renderer

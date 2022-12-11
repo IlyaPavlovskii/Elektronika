@@ -1,6 +1,7 @@
 package by.bulba.watch.elektronika.complication.impl
 
 import android.content.Context
+import androidx.annotation.DrawableRes
 import androidx.wear.watchface.CanvasComplication
 import androidx.wear.watchface.CanvasComplicationFactory
 import androidx.wear.watchface.WatchState
@@ -8,11 +9,9 @@ import androidx.wear.watchface.complications.rendering.CanvasComplicationDrawabl
 import androidx.wear.watchface.complications.rendering.ComplicationDrawable
 import by.bulba.watch.elektronika.R
 
-private const val DEFAULT_COMPLICATION_STYLE_DRAWABLE_ID = R.drawable.complication_primary_style
-
 internal class DefaultCanvasComplicationFactory(
     private val context: Context,
-    private val drawableId: Int = DEFAULT_COMPLICATION_STYLE_DRAWABLE_ID,
+    @DrawableRes private val drawableId: Int,
 ) : CanvasComplicationFactory {
     override fun create(
         watchState: WatchState,

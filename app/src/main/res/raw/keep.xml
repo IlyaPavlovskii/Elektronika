@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/complication_ambient_style,
+    @drawable/complication_primary_dark_style,
+    @drawable/complication_primary_style,
+    @drawable/complication_secondary_style"
+    tools:shrinkMode="strict"
+    />
+<!--tools:discard="@layout/unused2" -->

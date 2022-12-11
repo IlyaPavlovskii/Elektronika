@@ -1,0 +1,12 @@
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-keepattributes *Annotation*
+-keepattributes Signature,LineNumberTable,SourceFile
+-renamesourcefileattribute SourceFile
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-verbose
+-keepattributes InnerClasses
+-keep class **.R
+-keep class **.R$* { <fields>; }
+-keep class androidx.wear.watchface.complications.rendering.ComplicationDrawable { *; }

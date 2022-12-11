@@ -1,1 +1,2 @@
-./gradlew :app:bundleRelease :app:signReleaseBundle copyArtifacts :app:uploadReleasePrivateBundle :app:publishReleaseListing
+./gradlew :app:bundleRelease :app:publishReleaseListing :app:uploadReleasePrivateBundle
+ # :app:publishReleaseListing :app:uploadReleasePrivateBundle
