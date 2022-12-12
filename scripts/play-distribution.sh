@@ -1,2 +1,2 @@
-./gradlew :app:bundleRelease :app:publishReleaseListing :app:uploadReleasePrivateBundle
+./gradlew :app:bundleRelease :app:publishReleaseBundle :app:uploadReleasePrivateBundle
  # :app:publishReleaseListing :app:uploadReleasePrivateBundle
