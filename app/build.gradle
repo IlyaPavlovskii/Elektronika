@@ -6,7 +6,8 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    namespace 'by.bulba.watch.elektronika'
+    compileSdk 33
 
     defaultConfig {
         applicationId "by.bulba.watch.elektronika"
@@ -41,10 +42,12 @@ android {
             signingConfig signingConfigs.release
         }
     }
-
     packagingOptions {
-        exclude "META-INF/atomicfu.kotlin_module"
+        resources {
+            excludes += ['META-INF/atomicfu.kotlin_module']
+        }
     }
+
 
     compileOptions {
         sourceCompatibility = 1.8
